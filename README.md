@@ -1,7 +1,7 @@
 # Shell.js
 
 ### Version
-0.0.1
+0.0.2
 
 ### Tech
 Shell.js uses a number of open source projects to work properly:
