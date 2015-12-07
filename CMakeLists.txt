@@ -13,7 +13,6 @@ add_library(v7 v7/v7.c)
 
 add_executable(jssh main.c)
 
-
-target_link_libraries(jssh v7 mongoose)
+target_link_libraries(jssh v7 mongoose m)
 
 INSTALL_TARGETS(/bin jssh)

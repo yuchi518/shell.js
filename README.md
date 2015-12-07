@@ -13,8 +13,8 @@ Shell.js uses a number of open source projects to work properly:
 
 ### System Requirements
 
-1. CMake (https://cmake.org)
-2. Mac OS (Verified), Linux, etc.
+- CMake (https://cmake.org)
+- Mac OS (Verified), Linux, etc.
 
 ### Installation
 
@@ -27,6 +27,19 @@ Where is jssh?
 ```sh
 # which jssh
 /usr/local/bin/jssh
+```
+
+### Run interactive mode
+You can run in interactive mode like most shell script language.
+```sh
+# jssh
+Shell.js 0.1
+>>> var a = 10
+>>> print (a)
+10 
+>>> hi
+err: Exec exception, result: ffff000001eaae88
+>>> ^C
 ```
 
 ### Run Examples
@@ -46,8 +59,8 @@ hello!! j= 3
 ```
 
 ### ToDo
-1. Add more libs (network, file, regex).
-2. Add into OpenWRT.
+- Add more libs (network, file, regex).
+- Add into OpenWRT.
 
 License
 ---
