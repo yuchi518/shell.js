@@ -2,7 +2,7 @@
 JavaScript shell
 
 ### Version
-0.0.2
+0.0.3
 
 ### Tech
 Shell.js uses a number of open source projects to work properly:
