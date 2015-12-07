@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include "v7.h"
+#include "jsc_file.h"
 
 char *read_file(const char *path, size_t *size);
 void print_err_and_res(enum v7_err err, v7_val_t result);
@@ -35,6 +36,10 @@ const char *errs_string[6] = {
         [V7_INVALID_ARG] = "Invalid arguments",
 };
 
+void install_all_js_clibs(struct v7 *v7)
+{
+    jsc_install_file_lib(v7);
+}
 
 int main(int argc, char *argv[]) {
     enum v7_err err;
@@ -47,6 +52,8 @@ int main(int argc, char *argv[]) {
         for (i=1; i<argc; i++)
         {
             v7 = v7_create();
+            install_all_js_clibs(v7);
+
             const char *js_path = argv[i];
             size_t js_size = 0;
             char *js_code = read_file(js_path, &js_size);
@@ -73,6 +80,8 @@ int main(int argc, char *argv[]) {
         char *js_string = NULL;
         size_t js_string_len = 0;
         v7 = v7_create();
+        install_all_js_clibs(v7);
+
         printf("Shell.js 0.1\n>>> ");
         while ((getline(&js_string, &js_string_len, stdin)) != -1) {
             err = v7_exec(v7, js_string, &exec_result);
