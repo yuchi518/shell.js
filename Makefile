@@ -12,6 +12,7 @@ CFLAGS    := -DV7_BUILD_PROFILE=3 -DV7_ENABLE__Memory__stats -DV7_ENABLE_COMPACT
 mongooseFLAGS := -DEXCLUDE_COMMON
 
 vpath %.c $(SRC_DIR)
+vpath %.h $(SRC_DIR)
 
 define make-goal
 $1/%.o: %.c
