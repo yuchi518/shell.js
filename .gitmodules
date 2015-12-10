@@ -1,6 +1,0 @@
-[submodule "v7"]
-	path = v7
-	url = https://github.com/yuchi518/v7.git
-[submodule "mongoose"]
-	path = mongoose
-	url = https://github.com/yuchi518/mongoose.git
