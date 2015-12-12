@@ -2,7 +2,7 @@
 JavaScript shell
 
 ### Version
-0.0.3
+0.0.5
 
 ### Tech
 Shell.js uses a number of open source projects to work properly:
@@ -56,6 +56,41 @@ or (If they are not executable files.)
 ```sh
 # jssh examples/ex1.js
 hello!! j= 3
+```
+
+### Buildin APIs
+
+- Env: ls, cd, pwd, realpath, etc.
+```sh
+Shell.js 0.1
+>> cd("/Volumes")
+>>> print(pwd())
+/Volumes 
+>>> print(ls("."))
+["."] 
+>>> print(realpath(ls(".")))
+["/Volumes"] 
+>>> print(realpath(ls("./*")))
+["/Volumes/Backup","/Volumes/Develop","/Volumes/Document","/","/Volumes/都是電影 嗎"] 
+>>> print(ls("./*"))
+["./Backup","./Develop","./Document","./OS","./都是電影 嗎"] 
+>>> 
+```
+
+- Env: cat, echo
+```sh
+Shell.js 0.1
+>>> print(cd("/Volumes/Develop"))
+/Volumes/Develop 
+>>> print(ls("a.txt"))
+undefined 
+jsc_file: problem with a.txt (no match of pattern), stopping early
+>>> echo("abcdefg", "a.txt")
+>>> print(ls("a.txt"))
+a.txt 
+>>> print(cat("a.txt"))
+abcdefg 
+>>> 
 ```
 
 ### ToDo
