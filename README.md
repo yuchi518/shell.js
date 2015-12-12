@@ -60,7 +60,7 @@ hello!! j= 3
 
 ### Buildin APIs
 
-- env: ls, cd, pwd, realpath, etc.
+- Env: ls, cd, pwd, realpath, etc.
 ```sh
 Shell.js 0.1
 >> cd("/Volumes")
@@ -74,6 +74,22 @@ Shell.js 0.1
 ["/Volumes/Backup","/Volumes/Develop","/Volumes/Document","/","/Volumes/都是電影 嗎"] 
 >>> print(ls("./*"))
 ["./Backup","./Develop","./Document","./OS","./都是電影 嗎"] 
+>>> 
+```
+
+- Env: cat, echo
+```sh
+Shell.js 0.1
+>>> print(cd("/Volumes/Develop"))
+/Volumes/Develop 
+>>> print(ls("a.txt"))
+undefined 
+jsc_file: problem with a.txt (no match of pattern), stopping early
+>>> echo("abcdefg", "a.txt")
+>>> print(ls("a.txt"))
+a.txt 
+>>> print(cat("a.txt"))
+abcdefg 
 >>> 
 ```
 

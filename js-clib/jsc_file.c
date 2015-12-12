@@ -135,10 +135,12 @@ static v7_val_t jsc_ls(struct v7 *v7)
     if (c == 0) return v7_create_undefined();
 
     v7_val_t array = v7_create_array(v7);
+    c = 0;
 
     for (i = 0; i < results.gl_pathc; i++) {
         //printf("%s\n", results.gl_pathv[i]);
         v7_array_push(v7, array, v7_create_string(v7, results.gl_pathv[i], ~0, 1));
+        c++;
     }
 
     globfree(& results);
@@ -163,7 +165,9 @@ static v7_val_t jsc_ls(struct v7 *v7)
     closedir(mydir);
      */
 
-    return array;
+    if (c==0) return v7_create_undefined();
+    else if (c==1) return v7_array_get(v7, array, 0);
+    else return array;
 }
 
 v7_val_t jsc_realpath(struct v7 *v7)
@@ -206,7 +210,111 @@ v7_val_t jsc_realpath(struct v7 *v7)
         }
     }
 
-    return c==0?v7_create_undefined():array;
+    if (c==0) return v7_create_undefined();
+    else if (c==1) return v7_array_get(v7, array, 0);
+    else return array;
+}
+
+
+static char *_read_file(const char *path, size_t *size) {
+    FILE *fp;
+    char *data = NULL;
+    if ((fp = fopen(path, "rb")) == NULL) {
+
+    } else if (fseek(fp, 0, SEEK_END) != 0) {
+        fclose(fp);
+    } else {
+        *size = ftell(fp);
+        data = (char *) malloc(*size + 1);
+        if (data != NULL) {
+            fseek(fp, 0, SEEK_SET); /* Some platforms might not have rewind(), Oo */
+            if (fread(data, 1, *size, fp) != *size) {
+                free(data);
+                return NULL;
+            }
+            data[*size] = '\0';
+        }
+        fclose(fp);
+    }
+    return data;
+}
+
+v7_val_t jsc_cat(struct v7 *v7)
+{
+    size_t file_size;
+    int c = 0, i;
+    int argc = v7_argc(v7);
+    v7_val_t array = v7_create_array(v7);
+    char *buff;
+
+    for (i=0; i<argc; i++)
+    {
+        v7_val_t obj = v7_arg(v7, i);
+        if (v7_is_array(v7, obj))
+        {
+            const size_t len = v7_array_length(v7, obj);
+            int j;
+            v7_val_t item;
+            for (j=0; j<len;j ++)
+            {
+                item = v7_array_get(v7, obj, j);
+                if (!v7_is_string(item)) continue;
+                const char *cstr = v7_to_cstring(v7, &item);
+                if (cstr == NULL) continue;
+                buff = _read_file(cstr, &file_size);
+                if (buff != NULL)
+                {
+                    v7_array_push(v7, array, v7_create_string(v7, buff, file_size, 1));
+                    free(buff);
+                }
+                c++;
+            }
+            continue;
+        }
+
+        if (!v7_is_string(obj)) continue;
+        const char *cstr = v7_to_cstring(v7, &obj);
+        if (cstr == NULL) continue;
+        buff = _read_file(cstr, &file_size);
+        if (buff != NULL)
+        {
+            v7_array_push(v7, array, v7_create_string(v7, buff, file_size, 1));
+            free(buff);
+        }
+        c++;
+    }
+
+    if (c==0) return v7_create_undefined();
+    else if (c==1) return v7_array_get(v7, array, 0);
+    else return array;
+}
+
+v7_val_t jsc_echo(struct v7 *v7)
+{
+    int argc = v7_argc(v7);
+    if (argc == 2)
+    {
+        v7_val_t obj0 = v7_arg(v7, 0);
+        v7_val_t obj1 = v7_arg(v7, 1);
+
+        if (v7_is_string(obj0) && v7_is_string(obj1))
+        {
+            const char *cstr0 = v7_to_cstring(v7, &obj0);
+            const char *cstr1 = v7_to_cstring(v7, &obj1);
+
+            if (cstr0!=NULL && cstr1!=NULL)
+            {
+                FILE *fp;
+                if ((fp = fopen(cstr1, "wb")) != NULL)
+                {
+                    fwrite(cstr0, strlen(cstr0), 1, fp);
+                    fclose(fp);
+                }
+            }
+        }
+    }
+
+    return v7_create_undefined();
 }
 
 
@@ -214,8 +322,13 @@ void jsc_install_file_lib(struct v7 *v7)
 {
     v7_set_method(v7, v7_get_global(v7), "sum", &jsc_sum);
     //v7_set_method(v7, v7_get_global(v7), "exec", &jsc_exec);
-    v7_set_method(v7, v7_get_global(v7), "pwd", &jsc_pwd);
+
     v7_set_method(v7, v7_get_global(v7), "cd", &jsc_cd);
+    v7_set_method(v7, v7_get_global(v7), "pwd", &jsc_pwd);
+
     v7_set_method(v7, v7_get_global(v7), "ls", &jsc_ls);
     v7_set_method(v7, v7_get_global(v7), "realpath", &jsc_realpath);
+
+    v7_set_method(v7, v7_get_global(v7), "echo", &jsc_echo);
+    v7_set_method(v7, v7_get_global(v7), "cat", &jsc_cat);
 }
