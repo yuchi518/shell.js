@@ -603,6 +603,33 @@ int json_emit_va(char *buf, int buf_len, const char *fmt, va_list);
 #endif /* __cplusplus */
 
 #endif /* FROZEN_HEADER_INCLUDED */
+#ifndef DIRENT_H_INCLUDED
+#define DIRENT_H_INCLUDED
+
+#ifdef CS_ENABLE_SPIFFS
+
+#include <spiffs.h>
+
+typedef struct {
+  spiffs_DIR dh;
+  struct spiffs_dirent de;
+} DIR;
+
+#define d_name name
+#define dirent spiffs_dirent
+
+int rmdir(const char *path);
+int mkdir(const char *path, mode_t mode);
+
+#endif
+
+#if defined(_WIN32) || defined(CS_ENABLE_SPIFFS)
+DIR *opendir(const char *dir_name);
+int closedir(DIR *dir);
+struct dirent *readdir(DIR *dir);
+#endif
+
+#endif
 /*
  * Copyright (c) 2014 Cesanta Software Limited
  * All rights reserved
@@ -1151,6 +1178,9 @@ void mg_if_poll(struct mg_connection *nc, time_t now);
 
 /* Deliver a TIMER event to the connection. */
 void mg_if_timer(struct mg_connection *c, time_t now);
+
+/* Perform interface-related connection initialization. Return 1 on success. */
+int mg_if_create_conn(struct mg_connection *nc);
 
 /* Perform interface-related cleanup on connection before destruction. */
 void mg_if_destroy_conn(struct mg_connection *nc);
@@ -1844,7 +1874,10 @@ struct mg_serve_http_opts {
   /* DAV document root. If NULL, DAV requests are going to fail. */
   const char *dav_document_root;
 
-  /* DAV passwords file. If NULL, DAV requests are going to fail. */
+  /*
+   * DAV passwords file. If NULL, DAV requests are going to fail.
+   * If passwords file is set to "-", then DAV auth is disabled.
+   */
   const char *dav_auth_file;
 
   /* Glob pattern for the files to hide. */

@@ -342,7 +342,7 @@ void cs_log_set_level(enum cs_log_level level) {
   s_cs_log_level = level;
 }
 #ifdef NS_MODULE_LINES
-#line 1 "src/../../common/dirent.c"
+#line 1 "src/../../common/cs_dirent.c"
 /**/
 #endif
 /*
@@ -353,6 +353,7 @@ void cs_log_set_level(enum cs_log_level level) {
 #ifndef EXCLUDE_COMMON
 
 /* Amalgamated: #include "osdep.h" */
+/* Amalgamated: #include "cs_dirent.h" */
 
 /*
  * This file contains POSIX opendir/closedir/readdir API implementation
@@ -433,6 +434,48 @@ struct dirent *readdir(DIR *dir) {
   return result;
 }
 #endif
+
+#ifdef CS_ENABLE_SPIFFS
+
+DIR *opendir(const char *dir_name) {
+  DIR *dir = NULL;
+  extern spiffs fs;
+
+  if (dir_name != NULL && (dir = (DIR *) malloc(sizeof(*dir))) != NULL &&
+      SPIFFS_opendir(&fs, (char *) dir_name, &dir->dh) == NULL) {
+    free(dir);
+    dir = NULL;
+  }
+
+  return dir;
+}
+
+int closedir(DIR *dir) {
+  if (dir != NULL) {
+    SPIFFS_closedir(&dir->dh);
+    free(dir);
+  }
+  return 0;
+}
+
+struct dirent *readdir(DIR *dir) {
+  return SPIFFS_readdir(&dir->dh, &dir->de);
+}
+
+/* SPIFFs doesn't support directory operations */
+int rmdir(const char *path) {
+  (void) path;
+  return ENOTDIR;
+}
+
+int mkdir(const char *path, mode_t mode) {
+  (void) path;
+  (void) mode;
+  /* for spiffs supports only root dir, which comes from mongoose as '.' */
+  return (strlen(path) == 1 && *path == '.') ? 0 : ENOTDIR;
+}
+
+#endif /* CS_ENABLE_SPIFFS */
 
 #endif /* EXCLUDE_COMMON */
 #ifdef NS_MODULE_LINES
@@ -1705,6 +1748,9 @@ int c_vsnprintf(char *buf, size_t buf_size, const char *fmt, va_list ap) {
       } else if (ch == 'd' && len_mod == 'l') {
         i += c_itoa(buf + i, buf_size - i, va_arg(ap, long), 10, flags,
                     field_width);
+      } else if (ch == 'd' && len_mod == 'q') {
+        i += c_itoa(buf + i, buf_size - i, va_arg(ap, int64_t), 10, flags,
+                    field_width);
       } else if ((ch == 'x' || ch == 'u') && len_mod == 0) {
         i += c_itoa(buf + i, buf_size - i, va_arg(ap, unsigned),
                     ch == 'x' ? 16 : 10, flags, field_width);
@@ -1911,8 +1957,13 @@ void mg_if_poll(struct mg_connection *nc, time_t now) {
 
 static void mg_destroy_conn(struct mg_connection *conn) {
   mg_if_destroy_conn(conn);
+#ifdef MG_ENABLE_SSL
+  if (conn->ssl != NULL) SSL_free(conn->ssl);
+  if (conn->ssl_ctx != NULL) SSL_CTX_free(conn->ssl_ctx);
+#endif
   mbuf_free(&conn->recv_mbuf);
   mbuf_free(&conn->send_mbuf);
+  memset(conn, 0, sizeof(*conn));
   MG_FREE(conn);
 }
 
@@ -2081,6 +2132,11 @@ MG_INTERNAL struct mg_connection *mg_create_connection(
      * doesn't compile with pedantic ansi flags.
      */
     conn->recv_mbuf_limit = ~0;
+    if (!mg_if_create_conn(conn)) {
+      MG_FREE(conn);
+      conn = NULL;
+      MG_SET_PTRPTR(opts.error_string, "failed init connection");
+    }
   } else {
     MG_SET_PTRPTR(opts.error_string, "failed create connection");
   }
@@ -2293,7 +2349,7 @@ static int mg_use_cert(SSL_CTX *ctx, const char *pem_file) {
 const char *mg_set_ssl(struct mg_connection *nc, const char *cert,
                        const char *ca_cert) {
   const char *result = NULL;
-  DBG(("%p %s %s", nc, cert, ca_cert));
+  DBG(("%p %s %s", nc, (cert ? cert : ""), (ca_cert ? ca_cert : "")));
 
   if ((nc->flags & MG_F_LISTENING) &&
       (nc->ssl_ctx = SSL_CTX_new(SSLv23_server_method())) == NULL) {
@@ -2831,12 +2887,13 @@ void mg_if_recved(struct mg_connection *nc, size_t len) {
   (void) len;
 }
 
+int mg_if_create_conn(struct mg_connection *nc) {
+  (void) nc;
+  return 1;
+}
+
 void mg_if_destroy_conn(struct mg_connection *nc) {
   if (nc->sock == INVALID_SOCKET) return;
-#ifdef MG_ENABLE_SSL
-  if (nc->ssl != NULL) SSL_free(nc->ssl);
-  if (nc->ssl_ctx != NULL) SSL_CTX_free(nc->ssl_ctx);
-#endif
   if (!(nc->flags & MG_F_UDP)) {
     closesocket(nc->sock);
   } else {
@@ -2958,8 +3015,6 @@ static void mg_write_to_socket(struct mg_connection *nc) {
         int ssl_err = mg_ssl_err(nc, n);
         if (ssl_err == SSL_ERROR_WANT_READ || ssl_err == SSL_ERROR_WANT_WRITE) {
           return; /* Call us again */
-        } else {
-          nc->flags |= MG_F_CLOSE_IMMEDIATELY;
         }
       } else {
         /* Successful SSL operation, clear off SSL wait flags */
@@ -3060,8 +3115,16 @@ static void mg_handle_udp_read(struct mg_connection *nc) {
 #ifdef MG_ENABLE_SSL
 static int mg_ssl_err(struct mg_connection *conn, int res) {
   int ssl_err = SSL_get_error(conn->ssl, res);
-  if (ssl_err == SSL_ERROR_WANT_READ) conn->flags |= MG_F_WANT_READ;
-  if (ssl_err == SSL_ERROR_WANT_WRITE) conn->flags |= MG_F_WANT_WRITE;
+  DBG(("%p %d -> %d", conn, res, ssl_err));
+  if (ssl_err == SSL_ERROR_WANT_READ) {
+    conn->flags |= MG_F_WANT_READ;
+  } else if (ssl_err == SSL_ERROR_WANT_WRITE) {
+    conn->flags |= MG_F_WANT_WRITE;
+  } else {
+    /* There could be an alert to deliver. Try our best. */
+    SSL_write(conn->ssl, "", 0);
+    conn->flags |= MG_F_CLOSE_IMMEDIATELY;
+  }
   return ssl_err;
 }
 
@@ -4577,22 +4640,15 @@ void mg_send_head(struct mg_connection *c, int status_code,
   if (content_length < 0) {
     mg_printf(c, "%s", "Transfer-Encoding: chunked\r\n");
   } else {
-#ifdef MG_ESP8266
-    /* TODO(lsm): remove this when ESP stdlib supports %lld */
-    mg_printf(c, "Content-Length: %lu\r\n", (unsigned long) content_length);
-#else
     mg_printf(c, "Content-Length: %" INT64_FMT "\r\n", content_length);
-#endif
   }
   mg_send(c, "\r\n", 2);
 }
 
 static void send_http_error(struct mg_connection *nc, int code,
                             const char *reason) {
-  if (reason == NULL) {
-    reason = "";
-  }
-  mg_printf(nc, "HTTP/1.1 %d %s\r\nContent-Length: 0\r\n\r\n", code, reason);
+  (void) reason;
+  mg_send_head(nc, code, 0, NULL);
 }
 
 #ifndef MG_DISABLE_SSI
@@ -5309,12 +5365,12 @@ static void scan_directory(struct mg_connection *nc, const char *dir,
   if ((dirp = (opendir(dir))) != NULL) {
     while ((dp = readdir(dirp)) != NULL) {
       /* Do not show current dir and hidden files */
-      if (is_file_hidden(dp->d_name, opts)) {
+      if (is_file_hidden((const char *) dp->d_name, opts)) {
         continue;
       }
       snprintf(path, sizeof(path), "%s/%s", dir, dp->d_name);
       if (mg_stat(path, &st) == 0) {
-        func(nc, dp->d_name, &st);
+        func(nc, (const char *) dp->d_name, &st);
       }
     }
     closedir(dirp);
@@ -5434,7 +5490,8 @@ static void handle_mkcol(struct mg_connection *nc, const char *path,
   send_http_error(nc, status_code, NULL);
 }
 
-static int remove_directory(const char *dir) {
+static int remove_directory(const struct mg_serve_http_opts *opts,
+                            const char *dir) {
   char path[MAX_PATH_SIZE];
   struct dirent *dp;
   cs_stat_t st;
@@ -5443,11 +5500,13 @@ static int remove_directory(const char *dir) {
   if ((dirp = opendir(dir)) == NULL) return 0;
 
   while ((dp = readdir(dirp)) != NULL) {
-    if (!strcmp(dp->d_name, ".") || !strcmp(dp->d_name, "..")) continue;
+    if (is_file_hidden((const char *) dp->d_name, opts)) {
+      continue;
+    }
     snprintf(path, sizeof(path), "%s%c%s", dir, '/', dp->d_name);
     mg_stat(path, &st);
     if (S_ISDIR(st.st_mode)) {
-      remove_directory(path);
+      remove_directory(opts, path);
     } else {
       remove(path);
     }
@@ -5458,12 +5517,38 @@ static int remove_directory(const char *dir) {
   return 1;
 }
 
-static void handle_delete(struct mg_connection *nc, const char *path) {
+static void handle_move(struct mg_connection *c,
+                        const struct mg_serve_http_opts *opts, const char *path,
+                        struct http_message *hm) {
+  const struct mg_str *dest = mg_get_http_header(hm, "Destination");
+  if (dest == NULL) {
+    send_http_error(c, 411, NULL);
+  } else {
+    const char *p = (char *) memchr(dest->p, '/', dest->len);
+    if (p != NULL && p[1] == '/' &&
+        (p = (char *) memchr(p + 2, '/', dest->p + dest->len - p)) != NULL) {
+      char buf[MAX_PATH_SIZE];
+      snprintf(buf, sizeof(buf), "%s%.*s", opts->dav_document_root,
+               (int) (dest->p + dest->len - p), p);
+      if (rename(path, buf) == 0) {
+        send_http_error(c, 200, NULL);
+      } else {
+        send_http_error(c, 418, NULL);
+      }
+    } else {
+      send_http_error(c, 500, NULL);
+    }
+  }
+}
+
+static void handle_delete(struct mg_connection *nc,
+                          const struct mg_serve_http_opts *opts,
+                          const char *path) {
   cs_stat_t st;
   if (mg_stat(path, &st) != 0) {
     send_http_error(nc, 404, NULL);
   } else if (S_ISDIR(st.st_mode)) {
-    remove_directory(path);
+    remove_directory(opts, path);
     send_http_error(nc, 204, NULL);
   } else if (remove(path) == 0) {
     send_http_error(nc, 204, NULL);
@@ -5474,10 +5559,10 @@ static void handle_delete(struct mg_connection *nc, const char *path) {
 
 /* Return -1 on error, 1 on success. */
 static int create_itermediate_directories(const char *path) {
-  const char *s = path;
+  const char *s;
 
   /* Create intermediate directories if they do not exist */
-  while (*s) {
+  for (s = path + 1; *s != '\0'; s++) {
     if (*s == '/') {
       char buf[MAX_PATH_SIZE];
       cs_stat_t st;
@@ -5487,7 +5572,6 @@ static int create_itermediate_directories(const char *path) {
         return -1;
       }
     }
-    s++;
   }
 
   return 1;
@@ -5535,7 +5619,7 @@ static void handle_put(struct mg_connection *nc, const char *path,
 
 static int is_dav_request(const struct mg_str *s) {
   return !mg_vcmp(s, "PUT") || !mg_vcmp(s, "DELETE") || !mg_vcmp(s, "MKCOL") ||
-         !mg_vcmp(s, "PROPFIND");
+         !mg_vcmp(s, "PROPFIND") || !mg_vcmp(s, "MOVE");
 }
 
 /*
@@ -6169,13 +6253,16 @@ static void mg_send_digest_auth_request(struct mg_connection *c,
 
 static void send_options(struct mg_connection *nc) {
   mg_printf(nc, "%s",
-            "HTTP/1.1 200 OK\r\nAllow: GET, POST, HEAD, CONNECT, PUT, "
-            "DELETE, OPTIONS, MKCOL,"
+            "HTTP/1.1 200 OK\r\nAllow: GET, POST, HEAD, CONNECT, OPTIONS"
 #ifndef MG_DISABLE_DAV
-            "PROPFIND \r\nDAV: 1"
+            ", MKCOL, PUT, DELETE, PROPFIND, MOVE\r\nDAV: 1,2"
 #endif
             "\r\n\r\n");
   nc->flags |= MG_F_SEND_AND_CLOSE;
+}
+
+static int is_creation_request(const struct http_message *hm) {
+  return mg_vcmp(&hm->method, "MKCOL") == 0 || mg_vcmp(&hm->method, "PUT") == 0;
 }
 
 void mg_send_http_file(struct mg_connection *nc, char *path,
@@ -6199,7 +6286,8 @@ void mg_send_http_file(struct mg_connection *nc, char *path,
              !is_authorized(hm, path, is_directory, opts->auth_domain,
                             opts->per_directory_auth_file, 0)) {
     mg_send_digest_auth_request(nc, opts->auth_domain);
-  } else if ((stat_result != 0 || is_file_hidden(path, opts)) && !is_dav) {
+  } else if ((stat_result != 0 || is_file_hidden(path, opts)) &&
+             !is_creation_request(hm)) {
     mg_printf(nc, "%s", "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n");
   } else if (is_directory && path[strlen(path) - 1] != '/' && !is_dav) {
     mg_printf(nc,
@@ -6212,16 +6300,19 @@ void mg_send_http_file(struct mg_connection *nc, char *path,
 #ifndef MG_DISABLE_DAV_AUTH
   } else if (is_dav &&
              (opts->dav_auth_file == NULL ||
-              !is_authorized(hm, path, is_directory, opts->auth_domain,
-                             opts->dav_auth_file, 1))) {
+              (strcmp(opts->dav_auth_file, "-") != 0 &&
+               !is_authorized(hm, path, is_directory, opts->auth_domain,
+                              opts->dav_auth_file, 1)))) {
     mg_send_digest_auth_request(nc, opts->auth_domain);
 #endif
   } else if (!mg_vcmp(&hm->method, "MKCOL")) {
     handle_mkcol(nc, path, hm);
   } else if (!mg_vcmp(&hm->method, "DELETE")) {
-    handle_delete(nc, path);
+    handle_delete(nc, opts, path);
   } else if (!mg_vcmp(&hm->method, "PUT")) {
     handle_put(nc, path, hm);
+  } else if (!mg_vcmp(&hm->method, "MOVE")) {
+    handle_move(nc, opts, path, hm);
 #endif
   } else if (!mg_vcmp(&hm->method, "OPTIONS")) {
     send_options(nc);
