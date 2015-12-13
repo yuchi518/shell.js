@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include "v7.h"
 #include "jsc_file.h"
-
+#include "jsc_net.h"
 
 char *read_file(const char *path, size_t *size);
 void print_err_and_res(enum v7_err err, v7_val_t result);
@@ -40,6 +40,7 @@ const char *errs_string[6] = {
 void install_all_js_clibs(struct v7 *v7)
 {
     jsc_install_file_lib(v7);
+    jsc_install_net_lib(v7);
 }
 
 int main(int argc, char *argv[]) {
