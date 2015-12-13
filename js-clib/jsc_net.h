@@ -16,16 +16,15 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
 //
-// Created by Yuchi on 12/7/15.
+// Created by Yuchi on 2015/12/12.
 //
 
-#ifndef SHELL_JS_JSC_FILE_H
-#define SHELL_JS_JSC_FILE_H
+#ifndef SHELL_JS_JSC_NET_H
+#define SHELL_JS_JSC_NET_H
 
 #include "v7.h"
 
-void jsc_install_file_lib(struct v7 *v7);
+void jsc_install_net_lib(struct v7 *v7);
 
-#endif //SHELL_JS_JSC_FILE_C_H
+#endif //SHELL_JS_JSC_NET_H

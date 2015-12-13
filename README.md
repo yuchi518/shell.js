@@ -13,8 +13,8 @@ Shell.js uses a number of open source projects to work properly:
 
 ### System Requirements
 
-- CMake (https://cmake.org)
-- Mac OS (Verified), Linux, etc.
+- CMake (https://cmake.org), testing in version 3.3 and later.
+- Mac OS or Linux, etc.
 
 ### Installation
 
