@@ -30,6 +30,7 @@
 #if defined(MG_ENABLE_DEBUG) && !defined(CS_ENABLE_DEBUG)
 #define CS_ENABLE_DEBUG
 #endif
+
 /*
  * Copyright (c) 2015 Cesanta Software Limited
  * All rights reserved
@@ -269,6 +270,18 @@ int64_t strtoll(const char *str, char **endptr, int base);
 
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
+#endif
+
+#ifdef __GNUC__
+#define NORETURN __attribute__((noreturn))
+#define UNUSED __attribute__((unused))
+#define NOINLINE __attribute__((noinline))
+#define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+#else
+#define NORETURN
+#define UNUSED
+#define NOINLINE
+#define WARN_UNUSED_RESULT
 #endif
 
 #endif /* OSDEP_HEADER_INCLUDED */

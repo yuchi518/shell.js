@@ -23,10 +23,10 @@
 
 #include "jsc_file.h"
 #include <unistd.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glob.h>
-#include <sys/syslimits.h>
 
 static double sum(double a, double b) {
     return a + b;
@@ -191,7 +191,7 @@ v7_val_t jsc_realpath(struct v7 *v7)
                 if (!v7_is_string(item)) continue;
                 const char *cstr = v7_to_cstring(v7, &item);
                 if (cstr == NULL) continue;
-                if (realpath(cstr, path) != NULL)
+                if (realpath(cstr, path))
                 {
                     v7_array_push(v7, array, v7_create_string(v7, path, ~0, 1));
                     c++;
@@ -203,7 +203,7 @@ v7_val_t jsc_realpath(struct v7 *v7)
         if (!v7_is_string(obj)) continue;
         const char *cstr = v7_to_cstring(v7, &obj);
         if (cstr == NULL) continue;
-        if (realpath(cstr, path) != NULL)
+        if (realpath(cstr, path))
         {
             v7_array_push(v7, array, v7_create_string(v7, path, ~0, 1));
             c++;
