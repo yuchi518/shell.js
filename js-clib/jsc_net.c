@@ -61,7 +61,7 @@ static void* _httpd(void* param)
 
 static enum v7_err jsc_httpd(struct v7* v7, v7_val_t* result)
 {
-    mg_start_thread(_httpd, NULL);
+    run(_httpd, NULL);
 
     *result = v7_mk_undefined();
     return V7_OK;

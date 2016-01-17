@@ -70,10 +70,15 @@ struct thread_struct {
 
 typedef struct thread_struct thread;
 
-thread* run_thread(thread* thrd, thread_func func, void *param);
+thread* run_thread(thread* thrd, thread_func func, void* param);
 void* wait_thread(thread* thrd);
 void destroy_thread(thread* thrd);
 
+/// run, management thread
+typedef int runid;
+runid run(thread_func func, void* param);
+void run_cancel(runid rid);
+void run_done(void);            // only call before program exit
 
 /// resource management
 typedef void* resource_management;
@@ -82,6 +87,7 @@ int res_create(resource_management mgn, size_t size, void** resource);
 void* res_get(resource_management mgn, int id);
 void res_release(resource_management mgn, int id);
 void res_release_all(resource_management mgn, void* (callback)(int id, void* resource));
+int res_any(resource_management mgn);
 void res_release_management(resource_management mgn);
 
 #endif //SHELL_JS_THREADS_H
