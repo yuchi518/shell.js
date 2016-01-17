@@ -9,6 +9,7 @@ Shell.js uses a number of open source projects to work properly:
 
 * [v7] - JavaScript interpreter. (https://github.com/cesanta/v7)
 * [mongoose] - Network library. (https://github.com/cesanta/mongoose)
+* [uthash] - Hash library. (https://github.com/troydhanson/uthash)
 
 
 ### System Requirements

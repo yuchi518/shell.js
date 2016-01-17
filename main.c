@@ -22,6 +22,7 @@
 //
 
 #include <stdlib.h>
+#include "common.h"
 #include "v7.h"
 #include "jsc_file.h"
 #include "jsc_net.h"
@@ -48,13 +49,14 @@ int main(int argc, char *argv[]) {
     v7_val_t exec_result;
     struct v7 *v7;
 
+    v7 = v7_create();
+    install_all_js_clibs(v7);
+
     if (argc > 1)
     {
         int i;
         for (i=1; i<argc; i++)
         {
-            v7 = v7_create();
-            install_all_js_clibs(v7);
 
             const char *js_path = argv[i];
             size_t js_size = 0;
@@ -74,15 +76,12 @@ int main(int argc, char *argv[]) {
                 if (err != V7_OK) print_err_and_res(err, exec_result);
             }
 
-            v7_destroy(v7);
         }
     }
     else
     {
         char *js_string = NULL;
         size_t js_string_len = 0;
-        v7 = v7_create();
-        install_all_js_clibs(v7);
 
         printf("Shell.js 0.1\n>>> ");
         while ((getline(&js_string, &js_string_len, stdin)) != -1) {
@@ -91,9 +90,11 @@ int main(int argc, char *argv[]) {
             printf(">>> ");
         }
 
-        v7_destroy(v7);
         free(js_string);
     }
+
+    run_done();
+    v7_destroy(v7);
 
     return 0;
 }

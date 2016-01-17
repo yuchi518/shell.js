@@ -120,6 +120,51 @@ void destroy_thread(thread* thrd)
     }
 }
 
+/// run
+static void* _run_res_mgn = nil;
+runid run(thread_func func, void* param)
+{
+    if (!_run_res_mgn) {
+        _run_res_mgn = res_create_management();
+    }
+
+    thread* thrd;
+    runid rid;
+    rid = res_create(_run_res_mgn, sizeof(*thrd), (void**)&thrd);
+
+    run_thread(thrd, func, param);
+
+    return rid;
+}
+
+void run_cancel(runid rid)
+{
+    thread* thrd;
+    if (_run_res_mgn)
+    {
+        thrd = res_get(_run_res_mgn, rid);
+        pthread_t* p = thrd->inst;
+        if (p) pthread_cancel(*p);
+    }
+}
+
+void run_done(void)
+{
+    runid rid;
+    thread* thrd;
+    if (_run_res_mgn)
+    {
+        while ((rid = res_any(_run_res_mgn)) >= 0)
+        {
+            thrd = res_get(_run_res_mgn, rid);
+            wait_thread(thrd);
+            destroy_thread(thrd);
+            res_release(_run_res_mgn, rid);
+        }
+        res_release_management(_run_res_mgn);
+        _run_res_mgn = nil;
+    }
+}
 
 /// resource
 
@@ -135,12 +180,15 @@ struct res_mgn_
 {
     int last_id;
     struct res_ *head;
+    pthread_mutex_t mutex;
 };
 
 
 resource_management res_create_management(void)
 {
     struct res_mgn_* mgn = mem_alloc(sizeof(struct res_mgn_));
+
+    pthread_mutex_init(&mgn->mutex, nil);
 
     return mgn;
 }
@@ -150,6 +198,8 @@ int res_create(resource_management _mgn, size_t size, void** resource)
     struct res_ *res;
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
     int id;
+
+    pthread_mutex_lock(&mgn->mutex);
 
     while(true)
     {
@@ -162,6 +212,9 @@ int res_create(resource_management _mgn, size_t size, void** resource)
             res->id = id;
             HASH_ADD_INT(mgn->head, id, res);
             if (resource) *resource = res->data;
+
+            pthread_mutex_unlock(&mgn->mutex);
+
             return id;
         }
     }
@@ -171,7 +224,10 @@ void* res_get(resource_management _mgn, int id)
 {
     struct res_ *res;
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
+
+    pthread_mutex_lock(&mgn->mutex);
     HASH_FIND_INT(mgn->head, &id, res);
+    pthread_mutex_unlock(&mgn->mutex);
 
     return res?res->data:nil;
 }
@@ -180,12 +236,15 @@ void res_release(resource_management _mgn, int id)
 {
     struct res_ *res;
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
+
+    pthread_mutex_lock(&mgn->mutex);
     HASH_FIND_INT(mgn->head, &id, res);
     if (res)
     {
         HASH_DEL(mgn->head, res);
         mem_free(res);
     }
+    pthread_mutex_unlock(&mgn->mutex);
 }
 
 void res_release_all(resource_management _mgn, void* (callback)(int id, void* resource))
@@ -193,17 +252,37 @@ void res_release_all(resource_management _mgn, void* (callback)(int id, void* re
     struct res_ *res, *tmp;
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
 
+    pthread_mutex_lock(&mgn->mutex);
     HASH_ITER(hh, mgn->head, res, tmp)
     {
         HASH_DEL(mgn->head, res);
         callback(res->id, res->data);
         mem_free(res);
     }
+    pthread_mutex_unlock(&mgn->mutex);
+}
+
+int res_any(resource_management _mgn)
+{
+    struct res_ *res, *tmp;
+    struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
+    int id = -1;
+
+    pthread_mutex_lock(&mgn->mutex);
+    HASH_ITER(hh, mgn->head, res, tmp)
+    {
+        id = res->id;
+    }
+    pthread_mutex_unlock(&mgn->mutex);
+
+    return id;
 }
 
 void res_release_management(resource_management _mgn)
 {
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
+
+    pthread_mutex_destroy(&mgn->mutex);
 
     mem_free(mgn);
 }
