@@ -37,9 +37,12 @@ typedef int s32;
 typedef unsigned int u32;
 typedef long long s64;
 typedef unsigned long long u64;
+typedef u8 bool;
+#define true        (1)
+#define false       (0)
 
 /// log
-#define MAX_LOG_MSG         (1024)
+#define MAX_LOG_MSG         1024
 
 #define LOG_ERR             0x01000000
 #define LOG_DBG             0x02000000
@@ -55,18 +58,31 @@ void ___log(u32 level, const char *file_name, const char *function_name, int lin
 void* mem_alloc(size_t size);
 void mem_free(void *memory);
 void mem_copy(void *mem_dest, void *mem_src, size_t size);
-
+void mem_clean(void *memory, size_t size);
 
 /// thread
 typedef void* (*thread_func)(void *param);
 
 struct thread_struct {
-
+    void* inst;
+    bool _should_free;
 };
 
-struct thread_struct* run_thread(struct thread_struct* thrd, thread_func func, void *param);
+typedef struct thread_struct thread;
+
+thread* run_thread(thread* thrd, thread_func func, void *param);
+void* wait_thread(thread* thrd);
+void destroy_thread(thread* thrd);
 
 
+/// resource management
+typedef void* resource_management;
+resource_management res_create_management(void);
+int res_create(resource_management mgn, size_t size, void** resource);
+void* res_get(resource_management mgn, int id);
+void res_release(resource_management mgn, int id);
+void res_release_all(resource_management mgn, void* (callback)(int id, void* resource));
+void res_release_management(resource_management mgn);
 
 #endif //SHELL_JS_THREADS_H
 

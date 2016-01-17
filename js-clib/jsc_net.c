@@ -22,6 +22,7 @@
 
 #include "jsc_net.h"
 #include "mongoose.h"
+#include "common.h"
 
 struct mg_serve_http_opts s_http_server_opts;
 static void _httpd_handler(struct mg_connection *nc, int ev, void *p)
@@ -58,14 +59,15 @@ static void* _httpd(void* param)
     return NULL;
 }
 
-static enum v7_err jsc_httpd(struct v7 *v7, v7_val_t* result)
+static enum v7_err jsc_httpd(struct v7* v7, v7_val_t* result)
 {
     mg_start_thread(_httpd, NULL);
+
     *result = v7_mk_undefined();
     return V7_OK;
 }
 
-void jsc_install_net_lib(struct v7 *v7)
+void jsc_install_net_lib(struct v7* v7)
 {
     v7_set_method(v7, v7_get_global(v7), "httpd", &jsc_httpd);
 }
