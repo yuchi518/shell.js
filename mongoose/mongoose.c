@@ -1,6 +1,6 @@
 #include "mongoose.h"
 #ifdef NS_MODULE_LINES
-#line 1 "src/internal.h"
+#line 1 "./src/internal.h"
 /**/
 #endif
 /*
@@ -77,7 +77,8 @@ MG_INTERNAL int mg_parse_address(const char *str, union socket_address *sa,
                                  int *proto, char *host, size_t host_len);
 MG_INTERNAL void mg_call(struct mg_connection *nc,
                          mg_event_handler_t ev_handler, int ev, void *ev_data);
-MG_INTERNAL void mg_forward(struct mg_connection *, struct mg_connection *);
+MG_INTERNAL void mg_forward(struct mg_connection *from,
+                            struct mg_connection *to);
 MG_INTERNAL void mg_add_conn(struct mg_mgr *mgr, struct mg_connection *c);
 MG_INTERNAL void mg_remove_conn(struct mg_connection *c);
 MG_INTERNAL size_t recv_avail_size(struct mg_connection *conn, size_t max);
@@ -86,7 +87,8 @@ MG_INTERNAL struct mg_connection *mg_create_connection(
     struct mg_add_sock_opts opts);
 
 #ifndef MG_DISABLE_FILESYSTEM
-MG_INTERNAL int find_index_file(char *, size_t, const char *, cs_stat_t *);
+MG_INTERNAL int find_index_file(char *path, size_t path_len, const char *list,
+                                cs_stat_t *stp);
 #endif
 
 #ifdef _WIN32
@@ -119,12 +121,12 @@ struct ctl_msg {
 };
 
 /* Forward declarations for testing. */
-extern void *(*test_malloc)(size_t);
-extern void *(*test_calloc)(size_t, size_t);
+extern void *(*test_malloc)(size_t size);
+extern void *(*test_calloc)(size_t count, size_t size);
 
 #endif /* MG_INTERNAL_HEADER_INCLUDED */
 #ifdef NS_MODULE_LINES
-#line 1 "src/../../common/base64.c"
+#line 1 "./src/../../common/base64.c"
 /**/
 #endif
 /*
@@ -326,7 +328,7 @@ int cs_base64_decode(const unsigned char *s, int len, char *dst) {
 
 #endif /* EXCLUDE_COMMON */
 #ifdef NS_MODULE_LINES
-#line 1 "src/../../common/cs_dbg.c"
+#line 1 "./src/../../common/cs_dbg.c"
 /**/
 #endif
 /* Amalgamated: #include "common/cs_dbg.h" */
@@ -354,7 +356,7 @@ void cs_log_set_level(enum cs_log_level level) {
   s_cs_log_level = level;
 }
 #ifdef NS_MODULE_LINES
-#line 1 "src/../../common/cs_dirent.c"
+#line 1 "./src/../../common/cs_dirent.c"
 /**/
 #endif
 /*
@@ -491,7 +493,31 @@ int mkdir(const char *path, mode_t mode) {
 
 #endif /* EXCLUDE_COMMON */
 #ifdef NS_MODULE_LINES
-#line 1 "src/../deps/frozen/frozen.c"
+#line 1 "./src/../../common/cs_time.c"
+/**/
+#endif
+#ifndef _WIN32
+#include <stddef.h>
+#ifndef MG_CC3200
+#include <sys/time.h>
+#endif
+#else
+#include <windows.h>
+#endif
+
+double cs_time() {
+  double now;
+#ifndef _WIN32
+  struct timeval tv;
+  if (gettimeofday(&tv, NULL /* tz */) != 0) return 0;
+  now = (double) tv.tv_sec + (((double) tv.tv_usec) / 1000000.0);
+#else
+  now = GetTickCount() / 1000.0;
+#endif
+  return now;
+}
+#ifdef NS_MODULE_LINES
+#line 1 "./src/../deps/frozen/frozen.c"
 /**/
 #endif
 /*
@@ -992,7 +1018,7 @@ int json_emit(char *buf, int buf_len, const char *fmt, ...) {
   return len;
 }
 #ifdef NS_MODULE_LINES
-#line 1 "src/../../common/md5.c"
+#line 1 "./src/../../common/md5.c"
 /**/
 #endif
 /*
@@ -1240,7 +1266,7 @@ char *cs_md5(char buf[33], ...) {
 
 #endif /* EXCLUDE_COMMON */
 #ifdef NS_MODULE_LINES
-#line 1 "src/../../common/mbuf.c"
+#line 1 "./src/../../common/mbuf.c"
 /**/
 #endif
 /*
@@ -1338,7 +1364,7 @@ void mbuf_remove(struct mbuf *mb, size_t n) {
 
 #endif /* EXCLUDE_COMMON */
 #ifdef NS_MODULE_LINES
-#line 1 "src/../../common/sha1.c"
+#line 1 "./src/../../common/sha1.c"
 /**/
 #endif
 /* Copyright(c) By Steve Reid <steve@edmweb.com> */
@@ -1593,7 +1619,7 @@ void cs_hmac_sha1(const unsigned char *key, size_t keylen,
 
 #endif /* EXCLUDE_COMMON */
 #ifdef NS_MODULE_LINES
-#line 1 "src/../../common/str_util.c"
+#line 1 "./src/../../common/str_util.c"
 /**/
 #endif
 /*
@@ -1831,7 +1857,7 @@ void to_wchar(const char *path, wchar_t *wbuf, size_t wbuf_len) {
 
 #endif /* EXCLUDE_COMMON */
 #ifdef NS_MODULE_LINES
-#line 1 "src/net.c"
+#line 1 "./src/net.c"
 /**/
 #endif
 /*
@@ -1856,6 +1882,7 @@ void to_wchar(const char *path, wchar_t *wbuf, size_t wbuf_len) {
 /* Amalgamated: #include "mongoose/src/util.h" */
 /* Amalgamated: #include "mongoose/src/dns.h" */
 /* Amalgamated: #include "mongoose/src/resolv.h" */
+/* Amalgamated: #include "common/cs_time.h" */
 
 #if MG_MGR_EV_MGR == 1 /* epoll() */
 #include <sys/epoll.h>
@@ -1946,10 +1973,10 @@ MG_INTERNAL void mg_call(struct mg_connection *nc,
        (int) nc->recv_mbuf.len, (int) nc->send_mbuf.len));
 }
 
-void mg_if_timer(struct mg_connection *c, time_t now) {
+void mg_if_timer(struct mg_connection *c, double now) {
   if (c->ev_timer_time > 0 && now >= c->ev_timer_time) {
-    double dnow = now, old_value = c->ev_timer_time;
-    mg_call(c, NULL, MG_EV_TIMER, &dnow);
+    double old_value = c->ev_timer_time;
+    mg_call(c, NULL, MG_EV_TIMER, &now);
     /*
      * To prevent timer firing all the time, reset the timer after delivery.
      * However, in case user sets it to new value, do not reset.
@@ -2017,7 +2044,7 @@ void mg_mgr_init(struct mg_mgr *m, void *user_data) {
 }
 
 #ifdef MG_ENABLE_JAVASCRIPT
-static v7_val_t mg_send_js(struct v7 *v7) {
+static enum v7_err mg_send_js(struct v7 *v7, v7_val_t *res) {
   v7_val_t arg0 = v7_arg(v7, 0);
   v7_val_t arg1 = v7_arg(v7, 1);
   struct mg_connection *c = (struct mg_connection *) v7_to_foreign(arg0);
@@ -2028,7 +2055,9 @@ static v7_val_t mg_send_js(struct v7 *v7) {
     mg_send(c, data, len);
   }
 
-  return v7_create_number(len);
+  *res = v7_create_number(len);
+
+  return V7_OK;
 }
 
 enum v7_err mg_enable_javascript(struct mg_mgr *m, struct v7 *v7,
@@ -2132,7 +2161,7 @@ MG_INTERNAL struct mg_connection *mg_create_connection(
     conn->sock = INVALID_SOCKET;
     conn->handler = callback;
     conn->mgr = mgr;
-    conn->last_io_time = time(NULL);
+    conn->last_io_time = mg_time();
     conn->flags = opts.flags & _MG_ALLOWED_CONNECT_FLAGS_MASK;
     conn->user_data = opts.user_data;
     /*
@@ -2360,6 +2389,15 @@ const char *mg_set_ssl(struct mg_connection *nc, const char *cert,
   const char *result = NULL;
   DBG(("%p %s %s", nc, (cert ? cert : ""), (ca_cert ? ca_cert : "")));
 
+  if (nc->ssl != NULL) {
+    SSL_free(nc->ssl);
+    nc->ssl = NULL;
+  }
+  if (nc->ssl_ctx != NULL) {
+    SSL_CTX_free(nc->ssl_ctx);
+    nc->ssl_ctx = NULL;
+  }
+
   if ((nc->flags & MG_F_LISTENING) &&
       (nc->ssl_ctx = SSL_CTX_new(SSLv23_server_method())) == NULL) {
     result = "SSL_CTX_new() failed";
@@ -2422,7 +2460,7 @@ MG_INTERNAL size_t recv_avail_size(struct mg_connection *conn, size_t max) {
 }
 
 void mg_send(struct mg_connection *nc, const void *buf, int len) {
-  nc->last_io_time = time(NULL);
+  nc->last_io_time = mg_time();
   if (nc->flags & MG_F_UDP) {
     mg_if_udp_send(nc, buf, len);
   } else {
@@ -2453,7 +2491,7 @@ static void mg_recv_common(struct mg_connection *nc, void *buf, int len) {
     MG_FREE(buf);
     return;
   }
-  nc->last_io_time = time(NULL);
+  nc->last_io_time = mg_time();
   if (nc->recv_mbuf.len == 0) {
     /* Adopt buf as recv_mbuf's backing store. */
     mbuf_free(&nc->recv_mbuf);
@@ -2580,7 +2618,7 @@ static void resolve_cb(struct mg_dns_message *msg, void *data,
   }
 
   if (e == MG_RESOLVE_TIMEOUT) {
-    double now = time(NULL);
+    double now = mg_time();
     mg_call(nc, NULL, MG_EV_TIMER, &now);
   }
 
@@ -2794,8 +2832,12 @@ double mg_set_timer(struct mg_connection *c, double timestamp) {
   }
   return result;
 }
+
+double mg_time() {
+  return cs_time();
+}
 #ifdef NS_MODULE_LINES
-#line 1 "src/net_if_socket.c"
+#line 1 "./src/net_if_socket.c"
 /**/
 #endif
 #ifndef MG_DISABLE_SOCKET_IF
@@ -3172,7 +3214,7 @@ static void mg_ssl_begin(struct mg_connection *nc) {
 #define _MG_F_FD_CAN_WRITE 1 << 1
 #define _MG_F_FD_ERROR 1 << 2
 
-void mg_mgr_handle_conn(struct mg_connection *nc, int fd_flags, time_t now) {
+void mg_mgr_handle_conn(struct mg_connection *nc, int fd_flags, double now) {
   DBG(("%p fd=%d fd_flags=%d nc_flags=%lu rmbl=%d smbl=%d", nc, nc->sock,
        fd_flags, nc->flags, (int) nc->recv_mbuf.len, (int) nc->send_mbuf.len));
 
@@ -3378,10 +3420,10 @@ time_t mg_mgr_poll(struct mg_mgr *mgr, int timeout_ms) {
   struct epoll_event events[MG_EPOLL_MAX_EVENTS];
   struct mg_connection *nc, *next;
   int num_ev, fd_flags;
-  time_t now;
+  double now;
 
   num_ev = epoll_wait(epoll_fd, events, MG_EPOLL_MAX_EVENTS, timeout_ms);
-  now = time(NULL);
+  now = mg_time();
   DBG(("epoll_wait @ %ld num_ev=%d", (long) now, num_ev));
 
   while (num_ev-- > 0) {
@@ -3462,7 +3504,7 @@ void mg_add_to_set(sock_t sock, fd_set *set, sock_t *max_fd) {
 }
 
 time_t mg_mgr_poll(struct mg_mgr *mgr, int milli) {
-  time_t now = time(NULL);
+  double now = mg_time();
   struct mg_connection *nc, *tmp;
   struct timeval tv;
   fd_set read_set, write_set, err_set;
@@ -3503,7 +3545,7 @@ time_t mg_mgr_poll(struct mg_mgr *mgr, int milli) {
   tv.tv_usec = (milli % 1000) * 1000;
 
   num_selected = select((int) max_fd + 1, &read_set, &write_set, &err_set, &tv);
-  now = time(NULL);
+  now = mg_time();
   DBG(("select @ %ld num_ev=%d of %d", (long) now, num_selected, num_fds));
 
 #ifndef MG_DISABLE_SOCKETPAIR
@@ -3620,7 +3662,7 @@ void mg_if_get_conn_addr(struct mg_connection *nc, int remote,
 
 #endif /* !MG_DISABLE_SOCKET_IF */
 #ifdef NS_MODULE_LINES
-#line 1 "src/multithreading.c"
+#line 1 "./src/multithreading.c"
 /**/
 #endif
 /*
@@ -3728,7 +3770,7 @@ void mg_enable_multithreading(struct mg_connection *nc) {
 }
 #endif
 #ifdef NS_MODULE_LINES
-#line 1 "src/http.c"
+#line 1 "./src/http.c"
 /**/
 #endif
 /*
@@ -4576,7 +4618,7 @@ void http_handler(struct mg_connection *nc, int ev, void *ev_data) {
         /* Invoke callback. TODO(lsm): report errors */
         v7_array_push(v7, args, v7_create_foreign(nc));
         v7_array_push(v7, args, req);
-        if (v7_apply(v7, &res, v2, v7_create_undefined(), args) == V7_OK &&
+        if (v7_apply(v7, v2, v7_create_undefined(), args, &res) == V7_OK &&
             v7_is_true(v7, res)) {
           js_callback_handled_request++;
         }
@@ -5493,7 +5535,7 @@ static void handle_propfind(struct mg_connection *nc, const char *path,
 static void handle_mkcol(struct mg_connection *nc, const char *path,
                          struct http_message *hm) {
   int status_code = 500;
-  if (mg_get_http_header(hm, "Content-Length") != NULL) {
+  if (hm->body.len != (size_t) ~0 && hm->body.len > 0) {
     status_code = 415;
   } else if (!mg_mkdir(path, 0755)) {
     status_code = 201;
@@ -5503,6 +5545,8 @@ static void handle_mkcol(struct mg_connection *nc, const char *path,
     status_code = 403;
   } else if (errno == ENOENT) {
     status_code = 409;
+  } else {
+    status_code = 500;
   }
   send_http_error(nc, status_code, NULL);
 }
@@ -6517,7 +6561,7 @@ size_t mg_parse_multipart(const char *buf, size_t buf_len, char *var_name,
 
 #endif /* MG_DISABLE_HTTP */
 #ifdef NS_MODULE_LINES
-#line 1 "src/util.c"
+#line 1 "./src/util.c"
 /**/
 #endif
 /*
@@ -6879,7 +6923,7 @@ int mg_match_prefix(const char *pattern, int pattern_len, const char *str) {
   return j;
 }
 #ifdef NS_MODULE_LINES
-#line 1 "src/json-rpc.c"
+#line 1 "./src/json-rpc.c"
 /**/
 #endif
 /* Copyright (c) 2014 Cesanta Software Limited */
@@ -7041,7 +7085,7 @@ int mg_rpc_parse_reply(const char *buf, int len, struct json_token *toks,
 
 #endif /* MG_DISABLE_JSON_RPC */
 #ifdef NS_MODULE_LINES
-#line 1 "src/mqtt.c"
+#line 1 "./src/mqtt.c"
 /**/
 #endif
 /*
@@ -7343,7 +7387,7 @@ void mg_mqtt_disconnect(struct mg_connection *nc) {
 
 #endif /* MG_DISABLE_MQTT */
 #ifdef NS_MODULE_LINES
-#line 1 "src/mqtt-broker.c"
+#line 1 "./src/mqtt-broker.c"
 /**/
 #endif
 /*
@@ -7517,7 +7561,7 @@ struct mg_mqtt_session *mg_mqtt_next(struct mg_mqtt_broker *brk,
 
 #endif /* MG_ENABLE_MQTT_BROKER */
 #ifdef NS_MODULE_LINES
-#line 1 "src/dns.c"
+#line 1 "./src/dns.c"
 /**/
 #endif
 /*
@@ -7878,7 +7922,7 @@ void mg_set_protocol_dns(struct mg_connection *nc) {
 
 #endif /* MG_DISABLE_DNS */
 #ifdef NS_MODULE_LINES
-#line 1 "src/dns-server.c"
+#line 1 "./src/dns-server.c"
 /**/
 #endif
 /*
@@ -7953,7 +7997,7 @@ int mg_dns_reply_record(struct mg_dns_reply *reply,
 
 #endif /* MG_ENABLE_DNS_SERVER */
 #ifdef NS_MODULE_LINES
-#line 1 "src/resolv.c"
+#line 1 "./src/resolv.c"
 /**/
 #endif
 /*
@@ -8213,7 +8257,7 @@ int mg_resolve_async_opt(struct mg_mgr *mgr, const char *name, int query,
 
 #endif /* MG_DISABLE_RESOLVE */
 #ifdef NS_MODULE_LINES
-#line 1 "src/coap.c"
+#line 1 "./src/coap.c"
 /**/
 #endif
 /*

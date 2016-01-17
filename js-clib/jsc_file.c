@@ -22,6 +22,7 @@
 //
 
 #include "jsc_file.h"
+#include "common.h"
 #include <unistd.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -32,11 +33,11 @@ static double sum(double a, double b) {
     return a + b;
 }
 
-static v7_val_t jsc_sum(struct v7 *v7) {
+static enum v7_err jsc_sum(struct v7 *v7, v7_val_t* result) {
     double arg0 = v7_to_number(v7_arg(v7, 0));
     double arg1 = v7_to_number(v7_arg(v7, 1));
-    double result = sum(arg0, arg1);
-    return v7_create_number(result);
+    *result = v7_mk_number(sum(arg0, arg1));
+    return V7_OK;
 }
 
 
@@ -46,20 +47,23 @@ static v7_val_t jsc_sum(struct v7 *v7) {
 
 }*/
 
-static v7_val_t jsc_pwd(struct v7 *v7)
+static enum v7_err jsc_pwd(struct v7 *v7, v7_val_t* result)
 {
     char *path = getcwd(NULL, 0);
     if (path)
     {
-        v7_val_t result = v7_create_string(v7, path, ~0, 1);
+        *result = v7_mk_string(v7, path, ~0, 1);
         free(path);
-        return result;
+        return V7_OK;
     }
-
-    return v7_create_undefined();
+    else
+    {
+        *result = v7_mk_undefined();
+        return V7_INTERNAL_ERROR;
+    }
 }
 
-static v7_val_t jsc_cd(struct v7 *v7)
+static enum v7_err jsc_cd(struct v7 *v7, v7_val_t* result)
 {
     size_t argc = v7_argc(v7);
     if (argc == 1)
@@ -71,20 +75,23 @@ static v7_val_t jsc_cd(struct v7 *v7)
             if (cstr != NULL)
             {
                 chdir(cstr);
-                return jsc_pwd(v7);
+                return jsc_pwd(v7, result);
             }
         }
     }
-    return v7_create_undefined();
+    *result = v7_mk_undefined();
+    return V7_INVALID_ARG;
 }
 
 static int _globerr(const char *path, int eerrno)
 {
-    fprintf(stderr, "%s: %s: %s\n", "jsc_file", path, strerror(eerrno));
-    return 0;	/* let glob() keep going */
+
+    log_err(0, "%s: %s\n", path, strerror(eerrno));
+
+    return 0;    /* let glob() keep going */
 }
 
-static v7_val_t jsc_ls(struct v7 *v7)
+static enum v7_err jsc_ls(struct v7 *v7, v7_val_t* result)
 {
 
     int i, c = 0;
@@ -97,8 +104,8 @@ static v7_val_t jsc_ls(struct v7 *v7)
     {
         ret = glob(".", flags, _globerr, &results);
         if (ret != 0) {
-            fprintf(stderr, "%s: problem with %s (%s), stopping early\n",
-                    "jsc_file", ".",
+            log_err(0, "problem with %s (%s), stopping early\n",
+                    ".",
                     /* ugly: */	(ret == GLOB_ABORTED ? "filesystem problem" :
                                     ret == GLOB_NOMATCH ? "no match of pattern" :
                                     ret == GLOB_NOSPACE ? "no dynamic memory" :
@@ -119,8 +126,8 @@ static v7_val_t jsc_ls(struct v7 *v7)
             flags |= (c > 0 ? GLOB_APPEND : 0);
             ret = glob(cstr, flags, _globerr, & results);
             if (ret != 0) {
-                fprintf(stderr, "%s: problem with %s (%s), stopping early\n",
-                        "jsc_file", cstr,
+                log_err(0, "problem with %s (%s), stopping early\n",
+                        cstr,
                         /* ugly: */	(ret == GLOB_ABORTED ? "filesystem problem" :
                                         ret == GLOB_NOMATCH ? "no match of pattern" :
                                         ret == GLOB_NOSPACE ? "no dynamic memory" :
@@ -132,14 +139,17 @@ static v7_val_t jsc_ls(struct v7 *v7)
         }
     }
 
-    if (c == 0) return v7_create_undefined();
+    if (c == 0) {
+        *result = v7_mk_undefined();
+        return V7_OK;
+    }
 
-    v7_val_t array = v7_create_array(v7);
+    v7_val_t array = v7_mk_array(v7);
     c = 0;
 
     for (i = 0; i < results.gl_pathc; i++) {
-        //printf("%s\n", results.gl_pathv[i]);
-        v7_array_push(v7, array, v7_create_string(v7, results.gl_pathv[i], ~0, 1));
+        //log_info(0, "%s\n", results.gl_pathv[i]);
+        v7_array_push(v7, array, v7_mk_string(v7, results.gl_pathv[i], ~0, 1));
         c++;
     }
 
@@ -156,7 +166,7 @@ static v7_val_t jsc_ls(struct v7 *v7)
     while((myfile = readdir(mydir)) != NULL)
     {
         if (strcmp(myfile->d_name, ".") == 0 || strcmp(myfile->d_name, "..") == 0) continue;
-        v7_array_push(v7, array, v7_create_string(v7, myfile->d_name, ~0, 1));
+        v7_array_push(v7, array, v7_mk_string(v7, myfile->d_name, ~0, 1));
         //sprintf(buf, "%s", myfile->d_name);
         //stat(buf, &mystat);
         //printf("%zu",mystat.st_size);
@@ -165,17 +175,18 @@ static v7_val_t jsc_ls(struct v7 *v7)
     closedir(mydir);
      */
 
-    if (c==0) return v7_create_undefined();
-    else if (c==1) return v7_array_get(v7, array, 0);
-    else return array;
+    if (c==0) *result = v7_mk_undefined();
+    else if (c==1) *result = v7_array_get(v7, array, 0);
+    else *result = array;
+    return V7_OK;
 }
 
-v7_val_t jsc_realpath(struct v7 *v7)
+static enum v7_err jsc_realpath(struct v7 *v7, v7_val_t* result)
 {
     char path[PATH_MAX];
     int c = 0, i;
     int argc = v7_argc(v7);
-    v7_val_t array = v7_create_array(v7);
+    v7_val_t array = v7_mk_array(v7);
 
     for (i=0; i<argc; i++)
     {
@@ -193,7 +204,7 @@ v7_val_t jsc_realpath(struct v7 *v7)
                 if (cstr == NULL) continue;
                 if (realpath(cstr, path))
                 {
-                    v7_array_push(v7, array, v7_create_string(v7, path, ~0, 1));
+                    v7_array_push(v7, array, v7_mk_string(v7, path, ~0, 1));
                     c++;
                 }
             }
@@ -205,14 +216,15 @@ v7_val_t jsc_realpath(struct v7 *v7)
         if (cstr == NULL) continue;
         if (realpath(cstr, path))
         {
-            v7_array_push(v7, array, v7_create_string(v7, path, ~0, 1));
+            v7_array_push(v7, array, v7_mk_string(v7, path, ~0, 1));
             c++;
         }
     }
 
-    if (c==0) return v7_create_undefined();
-    else if (c==1) return v7_array_get(v7, array, 0);
-    else return array;
+    if (c==0) *result = v7_mk_undefined();
+    else if (c==1) *result = v7_array_get(v7, array, 0);
+    else *result = array;
+    return V7_OK;
 }
 
 
@@ -239,12 +251,12 @@ static char *_read_file(const char *path, size_t *size) {
     return data;
 }
 
-v7_val_t jsc_cat(struct v7 *v7)
+static enum v7_err jsc_cat(struct v7 *v7, v7_val_t* result)
 {
     size_t file_size;
     int c = 0, i;
     int argc = v7_argc(v7);
-    v7_val_t array = v7_create_array(v7);
+    v7_val_t array = v7_mk_array(v7);
     char *buff;
 
     for (i=0; i<argc; i++)
@@ -264,7 +276,7 @@ v7_val_t jsc_cat(struct v7 *v7)
                 buff = _read_file(cstr, &file_size);
                 if (buff != NULL)
                 {
-                    v7_array_push(v7, array, v7_create_string(v7, buff, file_size, 1));
+                    v7_array_push(v7, array, v7_mk_string(v7, buff, file_size, 1));
                     free(buff);
                 }
                 c++;
@@ -278,18 +290,19 @@ v7_val_t jsc_cat(struct v7 *v7)
         buff = _read_file(cstr, &file_size);
         if (buff != NULL)
         {
-            v7_array_push(v7, array, v7_create_string(v7, buff, file_size, 1));
+            v7_array_push(v7, array, v7_mk_string(v7, buff, file_size, 1));
             free(buff);
         }
         c++;
     }
 
-    if (c==0) return v7_create_undefined();
-    else if (c==1) return v7_array_get(v7, array, 0);
-    else return array;
+    if (c==0) *result = v7_mk_undefined();
+    else if (c==1) *result = v7_array_get(v7, array, 0);
+    else *result = array;
+    return V7_OK;
 }
 
-v7_val_t jsc_echo(struct v7 *v7)
+static enum v7_err jsc_echo(struct v7 *v7, v7_val_t* result)
 {
     int argc = v7_argc(v7);
     if (argc == 2)
@@ -314,7 +327,8 @@ v7_val_t jsc_echo(struct v7 *v7)
         }
     }
 
-    return v7_create_undefined();
+    *result = v7_mk_undefined();
+    return V7_OK;
 }
 
 

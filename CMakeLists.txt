@@ -11,7 +11,7 @@ set_property(TARGET mongoose PROPERTY COMPILE_FLAGS "-DEXCLUDE_COMMON")
 
 add_library(v7 v7/v7.c)
 
-add_library(js-clib js-clib/jsc_file.c js-clib/jsc_net.c)
+add_library(js-clib js-clib/common.c js-clib/jsc_file.c js-clib/jsc_net.c)
 
 add_executable(jssh main.c)
 

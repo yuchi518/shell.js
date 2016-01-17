@@ -58,10 +58,11 @@ static void* _httpd(void* param)
     return NULL;
 }
 
-v7_val_t jsc_httpd(struct v7 *v7)
+static enum v7_err jsc_httpd(struct v7 *v7, v7_val_t* result)
 {
     mg_start_thread(_httpd, NULL);
-    return v7_create_undefined();
+    *result = v7_mk_undefined();
+    return V7_OK;
 }
 
 void jsc_install_net_lib(struct v7 *v7)

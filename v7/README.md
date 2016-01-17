@@ -1,7 +1,6 @@
 V7: Embedded JavaScript engine
 ==============================
 
-[![Circle CI](https://circleci.com/gh/cesanta/v7.svg?style=shield)](https://circleci.com/gh/cesanta/v7)
 [![License](https://img.shields.io/badge/license-GPL_2-green.svg)](https://github.com/cesanta/v7/blob/master/LICENSE)
 
 V7 is a JavaScript engine written in C.
@@ -22,8 +21,9 @@ in JavaScript. V7 features are:
 
 ## Examples & Documentation
 
-- [User Guide](https://docs.cesanta.com/v7/) - Detailed User Guide and API reference
-- [examples](examples) - Collection of well-commented examples
+- [Developer Centre](https://docs.cesanta.com/v7/) - User Guide and API reference
+- [Examples](https://github.com/cesanta/v7/tree/master/examples) - Collection of well-commented examples
+- [Support Forum](http://forum.cesanta.com/index.php?p=/categories/v7) - Ask questions on our support forum
 
 # Contributions
 
