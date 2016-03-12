@@ -66,6 +66,9 @@ typedef void* (*thread_func)(void *param);
 struct thread_struct {
     void* inst;
     bool _should_free;
+    union {
+        void *_param[1];
+    };
 };
 
 typedef struct thread_struct thread;
@@ -76,7 +79,7 @@ void destroy_thread(thread* thrd);
 
 /// run, management thread
 typedef int runid;
-runid run(thread_func func, void* param);
+runid run(thread_func func, size_t param_size, void* param);
 void run_cancel(runid rid);
 void run_done(void);            // only call before program exit
 

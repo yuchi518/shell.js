@@ -77,7 +77,7 @@ extern "C" {
 /*
  * Property attributes bitmask
  */
-typedef unsigned int v7_prop_attr_t;
+typedef unsigned short v7_prop_attr_t;
 #define V7_PROPERTY_NON_WRITABLE (1 << 0)
 #define V7_PROPERTY_NON_ENUMERABLE (1 << 1)
 #define V7_PROPERTY_NON_CONFIGURABLE (1 << 2)
@@ -164,7 +164,7 @@ struct v7_mk_opts {
   char *freeze_file;
 #endif
 };
-struct v7 *v7_mk_opt(struct v7_mk_opts opts);
+struct v7 *v7_create_opt(struct v7_mk_opts opts);
 
 /* Destroy V7 instance */
 void v7_destroy(struct v7 *v7);
@@ -244,8 +244,18 @@ v7_val_t v7_mk_array(struct v7 *v7);
  */
 v7_val_t v7_mk_function(struct v7 *, v7_cfunction_t *func);
 
-/* Make f a JS constructor function for objects with prototype in proto. */
-v7_val_t v7_mk_constructor(struct v7 *v7, v7_val_t proto, v7_cfunction_t *f);
+/*
+ * Make f a JS function with specified prototype `proto`, so that the resulting
+ * function is better suited for the usage as a constructor.
+ */
+v7_val_t v7_mk_function_with_proto(struct v7 *v7, v7_cfunction_t *f,
+                                   v7_val_t proto);
+
+/*
+ * Returns true if given value is callable (i.e. it's either a JS function or
+ * cfunction)
+ */
+int v7_is_callable(struct v7 *v7, v7_val_t v);
 
 /* Make numeric primitive value */
 v7_val_t v7_mk_number(double num);
@@ -305,23 +315,11 @@ enum v7_err v7_mk_regexp(struct v7 *v7, const char *regex, size_t regex_len,
 v7_val_t v7_mk_foreign(void *ptr);
 
 /*
- * Make a JS value that holds C/C++ callback pointer.
- *
- * This is a low-level function value. It's not a real object and cannot hold
- * user defined properties. You should use `v7_mk_function` unless you know
- * what you're doing.
- */
-v7_val_t v7_mk_cfunction(v7_cfunction_t *func);
-
-/*
  * Returns true if the given value is an object or function.
  * i.e. it returns true if the value holds properties and can be
  * used as argument to `v7_get`, `v7_set` and `v7_def`.
  */
 int v7_is_object(v7_val_t v);
-
-/* Returns true if given value is a JavaScript function object */
-int v7_is_function(v7_val_t v);
 
 /* Returns true if given value is a primitive string value */
 int v7_is_string(v7_val_t v);
@@ -340,23 +338,6 @@ int v7_is_undefined(v7_val_t v);
 
 /* Returns true if given value is a JavaScript RegExp object*/
 int v7_is_regexp(struct v7 *v7, v7_val_t v);
-
-/* Returns true if given value holds a pointer to C callback */
-int v7_is_cfunction_ptr(v7_val_t v);
-
-/* Returns true if given value holds an object which represents C callback */
-int v7_is_cfunction_obj(struct v7 *v7, v7_val_t v);
-
-/*
- * Returns true if given value is either cfunction pointer or cfunction object
- */
-int v7_is_cfunction(struct v7 *v7, v7_val_t v);
-
-/*
- * Returns true if given value is callable (i.e. it's either a JS function,
- * cfunction pointer or cfunction object)
- */
-int v7_is_callable(struct v7 *v7, v7_val_t v);
 
 /* Returns true if given value holds `void *` pointer */
 int v7_is_foreign(v7_val_t v);
@@ -392,12 +373,6 @@ int v7_to_boolean(v7_val_t v);
  * Returns NaN for non-numbers.
  */
 double v7_to_number(v7_val_t v);
-
-/*
- * Returns `v7_cfunction_t *` callback pointer stored in `v7_val_t`, or NULL
- * if given value is neither cfunction pointer nor cfunction object.
- */
-v7_cfunction_t *v7_to_cfunction(struct v7 *v7, v7_val_t v);
 
 /*
  * Returns a pointer to the string stored in `v7_val_t`.
@@ -714,7 +689,9 @@ enum v7_heap_stat_what {
   V7_HEAP_STAT_PROP_HEAP_FREE,
   V7_HEAP_STAT_PROP_HEAP_CELL_SIZE,
   V7_HEAP_STAT_FUNC_AST_SIZE,
-  V7_HEAP_STAT_FUNC_BCODE_SIZE,
+  V7_HEAP_STAT_BCODE_OPS_SIZE,
+  V7_HEAP_STAT_BCODE_LIT_TOTAL_SIZE,
+  V7_HEAP_STAT_BCODE_LIT_DESER_SIZE,
   V7_HEAP_STAT_FUNC_OWNED,
   V7_HEAP_STAT_FUNC_OWNED_MAX
 };
@@ -803,13 +780,36 @@ int v7_disown(struct v7 *v7, v7_val_t *v);
  */
 void v7_gc(struct v7 *v7, int full);
 
-int v7_main(int argc, char *argv[], void (*init_func)(struct v7 *),
-            void (*fini_func)(struct v7 *));
+/*
+ * V7 executable main function.
+ *
+ * There are various callbacks available:
+ *
+ * `pre_freeze_init()` and `pre_init()` are optional intialization functions,
+ * aimed to export any extra functionality into vanilla v7 engine. They are
+ * called after v7 initialization, before executing given files or inline
+ * expressions. `pre_freeze_init()` is called before "freezing" v7 state;
+ * whereas `pre_init` called afterwards.
+ *
+ * `post_init()`, if provided, is called after executing files and expressions,
+ * before destroying v7 instance and exiting.
+ */
+int v7_main(int argc, char *argv[], void (*pre_freeze_init)(struct v7 *),
+            void (*pre_init)(struct v7 *), void (*post_init)(struct v7 *));
 
 #ifdef V7_STACK_SIZE
 /* Returns lowest recorded available stack size. */
 int v7_get_stack_avail_lwm(struct v7 *v7);
 #endif
+
+/*
+ * Make a JS value that holds C/C++ callback pointer.
+ *
+ * CAUTION: This is a low-level function value. It's not a real object and
+ * cannot hold user defined properties. You should use `v7_mk_function` unless
+ * you know what you're doing.
+ */
+v7_val_t v7_mk_cfunction(v7_cfunction_t *func);
 
 #ifdef __cplusplus
 }

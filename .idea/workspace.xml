@@ -13,18 +13,64 @@
       <config projectName="shell_js" targetName="js-clib" />
     </generated>
   </component>
-  <component name="CMakeSettings" AUTO_RELOAD="true" GENERATION_PASS_SYSTEM_ENVIRONMENT="true">
+  <component name="CMakeSettings" AUTO_RELOAD="false" GENERATION_PASS_SYSTEM_ENVIRONMENT="true">
     <ADDITIONAL_GENERATION_ENVIRONMENT>
       <envs />
     </ADDITIONAL_GENERATION_ENVIRONMENT>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b13ab28a-2fe9-46fb-a57b-6df68f0239a6" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mongoose/examples/rules.mk" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mongoose/examples/settings_panel_for_a_device/web_root/fossa.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/v7/tests/test_util.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/v7/tests/test_util.h" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/raspberry_pi_mjpeg_led/web_root/docs/arch.png" afterPath="$PROJECT_DIR$/mongoose/examples/raspberry_pi_mjpeg_led/web_root/docs/arch.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js-clib/common.c" afterPath="$PROJECT_DIR$/js-clib/common.c" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js-clib/common.h" afterPath="$PROJECT_DIR$/js-clib/common.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js-clib/jsc_net.c" afterPath="$PROJECT_DIR$/js-clib/jsc_net.c" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.c" afterPath="$PROJECT_DIR$/main.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/LICENSE" afterPath="$PROJECT_DIR$/mongoose/LICENSE" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/README.md" afterPath="$PROJECT_DIR$/mongoose/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/esp_libc.c" afterPath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/esp_libc.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/mongoose.c" afterPath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/mongoose.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/mongoose.h" afterPath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/mongoose.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/user_main.c" afterPath="$PROJECT_DIR$/mongoose/examples/ESP8266_RTOS/user/user_main.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/api_server/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/api_server/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/api_server/api_server.c" afterPath="$PROJECT_DIR$/mongoose/examples/api_server/api_server.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/big_upload/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/big_upload/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/big_upload/big_upload.c" afterPath="$PROJECT_DIR$/mongoose/examples/big_upload/big_upload.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/captive_dns_server/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/captive_dns_server/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/coap_client/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/coap_client/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/coap_server/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/coap_server/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/examples.mk" afterPath="$PROJECT_DIR$/mongoose/examples/examples.mk" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/http_client/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/http_client/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/json_rpc_server/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/json_rpc_server/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/mqtt_broker/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/mqtt_broker/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/mqtt_client/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/mqtt_client/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/multithreaded_restful_server/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/multithreaded_restful_server/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/netcat/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/netcat/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/publish_subscribe/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/publish_subscribe/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/restful_client/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/restful_client/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/restful_client/restful_client.c" afterPath="$PROJECT_DIR$/mongoose/examples/restful_client/restful_client.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/restful_server/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/restful_server/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/restful_server_s3/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/restful_server_s3/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/settings_panel_for_a_device/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/settings_panel_for_a_device/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/simplest_web_server/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/simplest_web_server/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/tcp_echo_server/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/tcp_echo_server/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/examples/websocket_chat/Makefile" afterPath="$PROJECT_DIR$/mongoose/examples/websocket_chat/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/mongoose.c" afterPath="$PROJECT_DIR$/mongoose/mongoose.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongoose/mongoose.h" afterPath="$PROJECT_DIR$/mongoose/mongoose.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v7/README.md" afterPath="$PROJECT_DIR$/v7/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v7/examples/call_c_from_js/call_c_from_js.c" afterPath="$PROJECT_DIR$/v7/examples/call_c_from_js/call_c_from_js.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v7/examples/call_js_from_c/call_js_from_c.c" afterPath="$PROJECT_DIR$/v7/examples/call_js_from_c/call_js_from_c.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v7/examples/js_oop/js_oop.c" afterPath="$PROJECT_DIR$/v7/examples/js_oop/js_oop.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v7/tests/ecma_report.txt" afterPath="$PROJECT_DIR$/v7/tests/ecma_report.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v7/tests/unit_test.c" afterPath="$PROJECT_DIR$/v7/tests/unit_test.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v7/v7.c" afterPath="$PROJECT_DIR$/v7/v7.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v7/v7.h" afterPath="$PROJECT_DIR$/v7/v7.h" />
     </list>
     <ignored path="shell.js.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -49,7 +95,7 @@
         <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.c">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="93" column="57" selection-start-line="93" selection-start-column="39" selection-end-line="93" selection-end-column="57" />
+              <caret line="223" column="35" selection-start-line="223" selection-start-column="24" selection-end-line="223" selection-end-column="39" />
               <folding>
                 <element signature="e#851#872#0" expanded="true" />
               </folding>
@@ -57,11 +103,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.c" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.c" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-37.148148">
-              <caret line="104" column="22" selection-start-line="104" selection-start-column="22" selection-end-line="104" selection-end-column="22" />
+            <state vertical-scroll-proportion="-0.56390977">
+              <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
               <folding>
                 <element signature="e#854#873#0" expanded="true" />
               </folding>
@@ -73,41 +119,9 @@
         <entry file="file://$PROJECT_DIR$/js-clib/jsc_net.c">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="63" column="22" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="22" />
+              <caret line="26" column="45" selection-start-line="26" selection-start-column="45" selection-end-line="26" selection-end-column="45" />
               <folding>
                 <element signature="e#853#873#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ex1.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/examples/ex1.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="jsc_net.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js-clib/jsc_net.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="2" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="common.c" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/js-clib/common.c">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.06910995">
-              <caret line="108" column="16" selection-start-line="108" selection-start-column="16" selection-end-line="108" selection-end-column="16" />
-              <folding>
-                <element signature="e#853#872#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -117,40 +131,27 @@
         <entry file="file://$PROJECT_DIR$/js-clib/common.h">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="40" column="23" selection-start-line="40" selection-start-column="23" selection-end-line="40" selection-end-column="23" />
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="17" selection-end-column="3" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <file leaf-file-name="v7.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/v7/v7.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="13.814815">
+              <caret line="321" column="10" selection-start-line="321" selection-start-column="7" selection-end-line="321" selection-end-column="10" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LICENSE" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/LICENSE">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.6896553">
-              <caret line="11" column="66" selection-start-line="11" selection-start-column="66" selection-end-line="11" selection-end-column="66" />
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="MarkdownPreviewEditor">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="jsc_file.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="28" selection-end-column="41" />
+              <caret line="15" column="14" selection-start-line="15" selection-start-column="14" selection-end-line="15" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -173,7 +174,6 @@
       <list>
         <option value="$PROJECT_DIR$/v7/v7.h" />
         <option value="$PROJECT_DIR$/examples/ex1.js" />
-        <option value="$PROJECT_DIR$/LICENSE" />
         <option value="$PROJECT_DIR$/v7/v7.c" />
         <option value="$PROJECT_DIR$/js-clib/js-cfile.c" />
         <option value="$PROJECT_DIR$/js-clib/jsc_file.h" />
@@ -182,12 +182,15 @@
         <option value="$PROJECT_DIR$/js-clib/threads.c" />
         <option value="$PROJECT_DIR$/js-clib/threads.h" />
         <option value="$PROJECT_DIR$/js-clib/jsc_file.c" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/main.c" />
-        <option value="$PROJECT_DIR$/js-clib/jsc_net.c" />
+        <option value="$PROJECT_DIR$/js-clib/jsc_parallel.h" />
         <option value="$PROJECT_DIR$/js-clib/common.h" />
         <option value="$PROJECT_DIR$/js-clib/common.c" />
+        <option value="$PROJECT_DIR$/js-clib/jsc_net.c" />
+        <option value="$PROJECT_DIR$/js-clib/jsc_parallel.c" />
+        <option value="$PROJECT_DIR$/LICENSE" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/main.c" />
       </list>
     </option>
   </component>
@@ -308,7 +311,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="preferences.general" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
     <property name="js-jscs-nodeInterpreter" value="/usr/local/bin/node" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="FullScreen" value="true" />
@@ -399,16 +402,19 @@
     <frame x="0" y="0" width="1920" height="1200" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18177083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14744146" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Tool Output" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.283608" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32849365" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27927145" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18177083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32870772" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="ANTLR Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39982653" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -416,7 +422,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32940108" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -459,23 +464,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="5" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="48" selection-start-line="37" selection-start-column="48" selection-end-line="37" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/examples/ex1.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -519,13 +507,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="3" column="5" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
         </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.c">
@@ -619,21 +607,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LICENSE">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16791044">
-          <caret line="10" column="39" selection-start-line="0" selection-start-column="0" selection-end-line="15" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/v7/README.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.17820324">
           <caret line="21" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
         </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/v7/LICENSE">
@@ -724,23 +705,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1329" column="64" selection-start-line="1329" selection-start-column="64" selection-end-line="1329" selection-end-column="64" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/v7/v7.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3486911">
-          <caret line="14881" column="28" selection-start-line="14881" selection-start-column="18" selection-end-line="14881" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/v7/v7.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="144" column="19" selection-start-line="144" selection-start-column="2" selection-end-line="144" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -748,33 +712,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.015706806">
           <caret line="6663" column="21" selection-start-line="6663" selection-start-column="6" selection-end-line="6663" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="93" column="57" selection-start-line="93" selection-start-column="39" selection-end-line="93" selection-end-column="57" />
-          <folding>
-            <element signature="e#851#872#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js-clib/jsc_net.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="28" selection-end-column="41" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -782,54 +719,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.6896553">
-          <caret line="11" column="66" selection-start-line="11" selection-start-column="66" selection-end-line="11" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-37.148148">
-          <caret line="104" column="22" selection-start-line="104" selection-start-column="22" selection-end-line="104" selection-end-column="22" />
-          <folding>
-            <element signature="e#854#873#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js-clib/common.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="23" selection-start-line="40" selection-start-column="23" selection-end-line="40" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js-clib/jsc_net.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="22" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="22" />
-          <folding>
-            <element signature="e#853#873#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -837,16 +726,109 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="66" selection-start-line="11" selection-start-column="66" selection-end-line="11" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.37333333">
+          <caret line="28" column="41" selection-start-line="26" selection-start-column="0" selection-end-line="28" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-clib/jsc_net.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="2" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js-clib/common.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.06910995">
-          <caret line="108" column="16" selection-start-line="108" selection-start-column="16" selection-end-line="108" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="134" column="15" selection-start-line="134" selection-start-column="15" selection-end-line="134" selection-end-column="15" />
           <folding>
             <element signature="e#853#872#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-clib/jsc_net.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="45" selection-start-line="26" selection-start-column="45" selection-end-line="26" selection-end-column="45" />
+          <folding>
+            <element signature="e#853#873#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/v7/v7.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.17333333">
+          <caret line="12751" column="4" selection-start-line="12751" selection-start-column="0" selection-end-line="12751" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="223" column="35" selection-start-line="223" selection-start-column="24" selection-end-line="223" selection-end-column="39" />
+          <folding>
+            <element signature="e#851#872#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/v7/v7.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="13.814815">
+          <caret line="321" column="10" selection-start-line="321" selection-start-column="7" selection-end-line="321" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2613941">
+          <caret line="13" column="73" selection-start-line="13" selection-start-column="73" selection-end-line="13" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-clib/common.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="17" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LICENSE">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="14" selection-start-line="15" selection-start-column="14" selection-end-line="15" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.56390977">
+          <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+          <folding>
+            <element signature="e#854#873#0" expanded="true" />
           </folding>
         </state>
       </provider>

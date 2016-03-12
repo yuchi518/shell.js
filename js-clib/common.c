@@ -122,7 +122,7 @@ void destroy_thread(thread* thrd)
 
 /// run
 static void* _run_res_mgn = nil;
-runid run(thread_func func, void* param)
+runid run(thread_func func, size_t param_size, void* param)
 {
     if (!_run_res_mgn) {
         _run_res_mgn = res_create_management();
@@ -130,9 +130,18 @@ runid run(thread_func func, void* param)
 
     thread* thrd;
     runid rid;
-    rid = res_create(_run_res_mgn, sizeof(*thrd), (void**)&thrd);
+    rid = res_create(_run_res_mgn, sizeof(*thrd) + param_size>sizeof(void*)?param_size:sizeof(void*), (void**)&thrd);
 
-    run_thread(thrd, func, param);
+    if (param>0)
+    {
+        mem_copy(thrd->_param, param, param_size);
+    }
+    else
+    {
+        thrd->_param[0] = nil;
+    }
+
+    run_thread(thrd, func, thrd->_param);
 
     return rid;
 }
