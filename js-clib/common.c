@@ -193,7 +193,7 @@ struct res_mgn_
 };
 
 
-resource_management res_create_management(void)
+resource_management_t res_create_management(void)
 {
     struct res_mgn_* mgn = mem_alloc(sizeof(struct res_mgn_));
 
@@ -202,7 +202,7 @@ resource_management res_create_management(void)
     return mgn;
 }
 
-int res_create(resource_management _mgn, size_t size, void** resource)
+int res_create(resource_management_t _mgn, size_t size, resource_t* resource)
 {
     struct res_ *res;
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
@@ -229,7 +229,20 @@ int res_create(resource_management _mgn, size_t size, void** resource)
     }
 }
 
-void* res_get(resource_management _mgn, int id)
+int res_create_and_clone(resource_management_t mgn, size_t size, resource_t resource_for_clone)
+{
+    resource_t resource;
+    int id;
+
+    id = res_create(mgn, size, &resource);
+    if (id>=0)
+    {
+        mem_copy(resource, resource_for_clone, size);
+    }
+    return id;
+}
+
+resource_t res_get(resource_management_t _mgn, int id)
 {
     struct res_ *res;
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
@@ -241,7 +254,7 @@ void* res_get(resource_management _mgn, int id)
     return res?res->data:nil;
 }
 
-void res_release(resource_management _mgn, int id)
+void res_release(resource_management_t _mgn, int id)
 {
     struct res_ *res;
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
@@ -256,7 +269,7 @@ void res_release(resource_management _mgn, int id)
     pthread_mutex_unlock(&mgn->mutex);
 }
 
-void res_release_all(resource_management _mgn, void* (callback)(int id, void* resource))
+void res_release_all(resource_management_t _mgn, void (callback)(int id, resource_t resource, void* user_data), void* user_data)
 {
     struct res_ *res, *tmp;
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
@@ -265,13 +278,13 @@ void res_release_all(resource_management _mgn, void* (callback)(int id, void* re
     HASH_ITER(hh, mgn->head, res, tmp)
     {
         HASH_DEL(mgn->head, res);
-        callback(res->id, res->data);
+        callback(res->id, res->data, user_data);
         mem_free(res);
     }
     pthread_mutex_unlock(&mgn->mutex);
 }
 
-int res_any(resource_management _mgn)
+int res_any(resource_management_t _mgn)
 {
     struct res_ *res, *tmp;
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
@@ -287,7 +300,7 @@ int res_any(resource_management _mgn)
     return id;
 }
 
-void res_release_management(resource_management _mgn)
+void res_release_management(resource_management_t _mgn)
 {
     struct res_mgn_* mgn = (struct res_mgn_*)_mgn;
 

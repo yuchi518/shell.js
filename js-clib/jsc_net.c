@@ -72,4 +72,7 @@ void jsc_install_net_lib(struct v7* v7)
     v7_set_method(v7, v7_get_global(v7), "httpd", &jsc_httpd);
 }
 
+void jsc_uninstall_net_lib(struct v7* v7)
+{
 
+}

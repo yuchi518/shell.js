@@ -27,5 +27,6 @@
 #include "v7.h"
 
 void jsc_install_file_lib(struct v7 *v7);
+void jsc_uninstall_file_lib(struct v7 *v7);
 
 #endif //SHELL_JS_JSC_FILE_C_H

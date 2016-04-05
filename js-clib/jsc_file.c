@@ -332,6 +332,171 @@ static enum v7_err jsc_echo(struct v7 *v7, v7_val_t* result)
 }
 
 
+static resource_management_t opened_files;
+struct file_handle
+{
+    enum handle_type type;
+    FILE* file;
+};
+
+void jsc_file_close(int id, resource_t resource, void *user_data)
+{
+    struct v7 *v7 = (struct v7*)user_data;
+    struct file_handle* hdl = (struct file_handle*)resource;
+    if (hdl->type == hdl_typ_file)
+        fclose(hdl->file);
+    else if (hdl->type == hdl_typ_pfile)
+        pclose(hdl->file);
+    else
+        ;       // impossible
+}
+
+static enum v7_err jsc_fopen(struct v7 *v7, v7_val_t* result)
+{
+    int argc = v7_argc(v7);
+    if (argc>=2) {
+        v7_val_t obj0 = v7_arg(v7, 0);
+        v7_val_t obj1 = v7_arg(v7, 1);
+
+        if (v7_is_string(obj0) && v7_is_string(obj1))
+        {
+            const char *filename = v7_to_cstring(v7, &obj0);
+            const char *mode = v7_to_cstring(v7, &obj1);
+            struct file_handle hdl;
+
+            hdl.type = hdl_typ_file;
+            hdl.file = fopen(filename, mode);
+            if (hdl.file)
+            {
+                int id = res_create_and_clone(opened_files, sizeof(hdl), &hdl);
+                if (id>=0)
+                {
+                    *result = v7_mk_number(id);
+                    return V7_OK;
+                }
+            }
+        }
+    }
+
+    *result = v7_mk_undefined();
+    return V7_OK;
+}
+
+
+static enum v7_err jsc_fclose(struct v7 *v7, v7_val_t* result)
+{
+    int argc = v7_argc(v7);
+    if (argc>=1)
+    {
+        v7_val_t obj0 = v7_arg(v7, 0);
+        if (v7_is_number(obj0))
+        {
+            int id = (int)v7_to_number((obj0));
+            if (id>=0)
+            {
+                resource_t resource = (resource_t)res_get(opened_files, id);
+                if (resource)
+                {
+                    jsc_file_close(id, resource, v7);
+                    res_release(opened_files, id);
+                }
+            }
+        }
+    }
+    *result = v7_mk_undefined();
+    return V7_OK;
+}
+
+static enum v7_err jsc_popen(struct v7 *v7, v7_val_t* result)
+{
+    int argc = v7_argc(v7);
+    if (argc>=2)
+    {
+        v7_val_t obj0 = v7_arg(v7, 0);
+        v7_val_t obj1 = v7_arg(v7, 1);
+
+        if (v7_is_string(obj0) && v7_is_string(obj1))
+        {
+            const char *command = v7_to_cstring(v7, &obj0);
+            const char *type = v7_to_cstring(v7, &obj1);
+            struct file_handle hdl;
+
+            hdl.type = hdl_typ_pfile;
+            hdl.file = popen(command, type);
+            if (hdl.file)
+            {
+                int id = res_create_and_clone(opened_files, sizeof(hdl), &hdl);
+                if (id>=0)
+                {
+                    *result = v7_mk_number(id);
+                    return V7_OK;
+                }
+            }
+        }
+    }
+
+    *result = v7_mk_undefined();
+    return V7_OK;
+}
+
+static enum v7_err jsc_pclose(struct v7 *v7, v7_val_t* result)
+{
+    int argc = v7_argc(v7);
+    if (argc>=1)
+    {
+        v7_val_t obj0 = v7_arg(v7, 0);
+        if (v7_is_number(obj0))
+        {
+            int id = (int)v7_to_number((obj0));
+            if (id>=0)
+            {
+                resource_t resource = (resource_t)res_get(opened_files, id);
+                if (resource)
+                {
+                    jsc_file_close(id, resource, v7);
+                    res_release(opened_files, id);
+                }
+            }
+        }
+    }
+    *result = v7_mk_undefined();
+    return V7_OK;
+}
+
+static enum v7_err jsc_readline(struct v7 *v7, v7_val_t* result)
+{
+    int argc = v7_argc(v7);
+    if (argc>=1)
+    {
+        v7_val_t obj0 = v7_arg(v7, 0);
+        if (v7_is_number(obj0))
+        {
+            int id = (int) v7_to_number((obj0));
+            if (id >= 0)
+            {
+                resource_t resource = (resource_t) res_get(opened_files, id);
+                if (resource)
+                {
+                    struct file_handle *hdl = (struct file_handle*)resource;
+                    char *lineptr = nil;
+                    size_t n = 0;
+                    if (getline(&lineptr, &n, hdl->file) > 0)
+                    {
+                        *result = v7_mk_string(v7, lineptr, n, 1);
+                    }
+                    else
+                        *result = v7_mk_null();
+
+                    if (lineptr) free(lineptr);
+                }
+            }
+        }
+    }
+    *result = v7_mk_undefined();
+    return V7_OK;
+}
+
+
 void jsc_install_file_lib(struct v7 *v7)
 {
     v7_set_method(v7, v7_get_global(v7), "sum", &jsc_sum);
@@ -345,4 +510,19 @@ void jsc_install_file_lib(struct v7 *v7)
 
     v7_set_method(v7, v7_get_global(v7), "echo", &jsc_echo);
     v7_set_method(v7, v7_get_global(v7), "cat", &jsc_cat);
+
+    opened_files = res_create_management();
+
+    v7_set_method(v7, v7_get_global(v7), "fopen", &jsc_fopen);
+    v7_set_method(v7, v7_get_global(v7), "fclose", &jsc_fclose);
+    v7_set_method(v7, v7_get_global(v7), "popen", &jsc_popen);
+    v7_set_method(v7, v7_get_global(v7), "pclose", &jsc_pclose);
+
 }
+
+void jsc_uninstall_file_lib(struct v7 *v7)
+{
+
+    res_release_all(opened_files, jsc_file_close, v7);
+}
+

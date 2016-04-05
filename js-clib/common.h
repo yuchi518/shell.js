@@ -54,6 +54,17 @@ void ___log(u32 level, const char *file_name, const char *function_name, int lin
 #define log_dbg(level, format, args...)         log((level | LOG_DBG), format, ##args)
 #define log_info(level, format, args...)        log((level | LOG_INFO), format, ##args)
 
+
+enum handle_type
+{
+    hdl_typ_nav         = 0x0000,           // invalid handle
+    hdl_typ_file        = 0x0001,           // fopen
+    hdl_typ_pfile       = 0x0002,           // popen
+    hdl_typ_thread      = 0x0010,           // pthread
+    hdl_typ_memory      = 0x0020,           // memory
+};
+
+
 /// memory
 void* mem_alloc(size_t size);
 void mem_free(void *memory);
@@ -84,14 +95,16 @@ void run_cancel(runid rid);
 void run_done(void);            // only call before program exit
 
 /// resource management
-typedef void* resource_management;
-resource_management res_create_management(void);
-int res_create(resource_management mgn, size_t size, void** resource);
-void* res_get(resource_management mgn, int id);
-void res_release(resource_management mgn, int id);
-void res_release_all(resource_management mgn, void* (callback)(int id, void* resource));
-int res_any(resource_management mgn);
-void res_release_management(resource_management mgn);
+typedef void* resource_management_t;
+typedef void* resource_t;
+resource_management_t res_create_management(void);
+int res_create(resource_management_t mgn, size_t size, resource_t* resource);
+int res_create_and_clone(resource_management_t mgn, size_t size, resource_t resource_for_clone);
+resource_t res_get(resource_management_t mgn, int id);
+void res_release(resource_management_t mgn, int id);
+void res_release_all(resource_management_t _mgn, void (callback)(int id, resource_t resource, void* user_data), void* user_data);
+int res_any(resource_management_t mgn);
+void res_release_management(resource_management_t mgn);
 
 #endif //SHELL_JS_THREADS_H
 

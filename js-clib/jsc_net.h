@@ -26,5 +26,6 @@
 #include "v7.h"
 
 void jsc_install_net_lib(struct v7 *v7);
+void jsc_uninstall_net_lib(struct v7 *v7);
 
 #endif //SHELL_JS_JSC_NET_H
