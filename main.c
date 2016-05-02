@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include "common.h"
 #include "v7.h"
+#include "jsc_sys.h"
 #include "jsc_file.h"
 #include "jsc_net.h"
 
@@ -40,8 +41,16 @@ const char *errs_string[6] = {
 
 void install_all_js_clibs(struct v7 *v7)
 {
+    jsc_install_sys_lib(v7);
     jsc_install_file_lib(v7);
     jsc_install_net_lib(v7);
+}
+
+void uninstall_all_js_clibs(struct v7 *v7)
+{
+    jsc_uninstall_net_lib(v7);
+    jsc_uninstall_file_lib(v7);
+    jsc_uninstall_sys_lib(v7);
 }
 
 int main(int argc, char *argv[]) {
@@ -94,6 +103,7 @@ int main(int argc, char *argv[]) {
     }
 
     run_done();
+    uninstall_all_js_clibs(v7);
     v7_destroy(v7);
 
     return 0;

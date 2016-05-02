@@ -20,17 +20,18 @@
 // Created by Yuchi on 2015/12/27.
 //
 
-#include "common.h"
-#include "uthash.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <string.h>
+#include <stdarg.h>
 #include <pthread.h>
+
+#include "common.h"
+#include "uthash.h"
 
 /// log
 
-void ___log(u32 level, const char *file_name, const char *function_name, int line_number, char* format, ...)
+void ___log(uint32 level, const char *file_name, const char *function_name, int line_number, char* format, ...)
 {
     char buffer[MAX_LOG_MSG];
     va_list args;
@@ -52,44 +53,19 @@ void ___log(u32 level, const char *file_name, const char *function_name, int lin
     va_end (args);
 }
 
-/// memory
-
-void* mem_alloc(size_t size)
-{
-    void* mem = malloc(size);
-    if (mem) memset(mem, 0, size);
-
-    return mem;
-}
-
-void mem_free(void *memory)
-{
-    if (memory) free(memory);
-}
-
-void mem_copy(void *mem_dest, void *mem_src, size_t size)
-{
-    memcpy(mem_dest, mem_src, size);
-}
-
-void mem_clean(void *memory, size_t size)
-{
-    memset(memory, 0, size);
-}
-
 
 /// thread
 
 thread* run_thread(thread* thrd, thread_func func, void *param)
 {
     if (!thrd) {
-        thrd = mem_alloc(sizeof(*thrd));
+        thrd = plat_mem_allocate(sizeof(*thrd));
         thrd->_should_free = true;
     } else {
-        mem_clean(thrd, sizeof(*thrd));
+        plat_mem_set(thrd, 0, sizeof(*thrd));
     }
 
-    thrd->inst = mem_alloc(sizeof(pthread_t));
+    thrd->inst = plat_mem_allocate(sizeof(pthread_t));
 
     pthread_create((pthread_t*)thrd->inst, NULL , func , param);
 
@@ -110,13 +86,13 @@ void destroy_thread(thread* thrd)
     if (p)
     {
         pthread_cancel(*p);
-        mem_free(p);
+        plat_mem_release(p);
     }
 
     if (thrd->_should_free)
     {
         thrd->_should_free = false;     // redundant code
-        mem_free(thrd);
+        plat_mem_release(thrd);
     }
 }
 
@@ -134,7 +110,7 @@ runid run(thread_func func, size_t param_size, void* param)
 
     if (param>0)
     {
-        mem_copy(thrd->_param, param, param_size);
+        plat_mem_copy(thrd->_param, param, param_size);
     }
     else
     {
@@ -182,7 +158,7 @@ struct res_
     int id;
     UT_hash_handle hh;
     //u32 __align;
-    u8 data[0];
+    uint8 data[0];
 };
 
 struct res_mgn_
@@ -195,7 +171,7 @@ struct res_mgn_
 
 resource_management_t res_create_management(void)
 {
-    struct res_mgn_* mgn = mem_alloc(sizeof(struct res_mgn_));
+    struct res_mgn_* mgn = plat_mem_allocate(sizeof(struct res_mgn_));
 
     pthread_mutex_init(&mgn->mutex, nil);
 
@@ -217,7 +193,7 @@ int res_create(resource_management_t _mgn, size_t size, resource_t* resource)
 
         if (!res)
         {
-            res = mem_alloc(sizeof(struct res_)+size);
+            res = plat_mem_allocate(sizeof(struct res_) + size);
             res->id = id;
             HASH_ADD_INT(mgn->head, id, res);
             if (resource) *resource = res->data;
@@ -237,7 +213,7 @@ int res_create_and_clone(resource_management_t mgn, size_t size, resource_t reso
     id = res_create(mgn, size, &resource);
     if (id>=0)
     {
-        mem_copy(resource, resource_for_clone, size);
+        plat_mem_copy(resource, resource_for_clone, size);
     }
     return id;
 }
@@ -264,7 +240,7 @@ void res_release(resource_management_t _mgn, int id)
     if (res)
     {
         HASH_DEL(mgn->head, res);
-        mem_free(res);
+        plat_mem_release(res);
     }
     pthread_mutex_unlock(&mgn->mutex);
 }
@@ -279,7 +255,7 @@ void res_release_all(resource_management_t _mgn, void (callback)(int id, resourc
     {
         HASH_DEL(mgn->head, res);
         callback(res->id, res->data, user_data);
-        mem_free(res);
+        plat_mem_release(res);
     }
     pthread_mutex_unlock(&mgn->mutex);
 }
@@ -306,6 +282,6 @@ void res_release_management(resource_management_t _mgn)
 
     pthread_mutex_destroy(&mgn->mutex);
 
-    mem_free(mgn);
+    plat_mem_release(mgn);
 }
 

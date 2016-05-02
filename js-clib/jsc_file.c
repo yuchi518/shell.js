@@ -53,7 +53,7 @@ static enum v7_err jsc_pwd(struct v7 *v7, v7_val_t* result)
     if (path)
     {
         *result = v7_mk_string(v7, path, ~0, 1);
-        free(path);
+        plat_mem_release(path);
         return V7_OK;
     }
     else
@@ -228,7 +228,7 @@ static enum v7_err jsc_realpath(struct v7 *v7, v7_val_t* result)
 }
 
 
-static char *_read_file(const char *path, size_t *size) {
+static char *_read_text_file(const char *path, size_t *size) {
     FILE *fp;
     char *data = NULL;
     if ((fp = fopen(path, "rb")) == NULL) {
@@ -237,11 +237,11 @@ static char *_read_file(const char *path, size_t *size) {
         fclose(fp);
     } else {
         *size = ftell(fp);
-        data = (char *) malloc(*size + 1);
+        data = (char *) plat_mem_allocate(*size + 1);
         if (data != NULL) {
             fseek(fp, 0, SEEK_SET); /* Some platforms might not have rewind(), Oo */
-            if (fread(data, 1, *size, fp) != *size) {
-                free(data);
+            if (fread(data, *size, 1, fp) != *size) {
+                plat_mem_release(data);
                 return NULL;
             }
             data[*size] = '\0';
@@ -273,11 +273,11 @@ static enum v7_err jsc_cat(struct v7 *v7, v7_val_t* result)
                 if (!v7_is_string(item)) continue;
                 const char *cstr = v7_to_cstring(v7, &item);
                 if (cstr == NULL) continue;
-                buff = _read_file(cstr, &file_size);
+                buff = _read_text_file(cstr, &file_size);
                 if (buff != NULL)
                 {
                     v7_array_push(v7, array, v7_mk_string(v7, buff, file_size, 1));
-                    free(buff);
+                    plat_mem_release(buff);
                 }
                 c++;
             }
@@ -287,11 +287,11 @@ static enum v7_err jsc_cat(struct v7 *v7, v7_val_t* result)
         if (!v7_is_string(obj)) continue;
         const char *cstr = v7_to_cstring(v7, &obj);
         if (cstr == NULL) continue;
-        buff = _read_file(cstr, &file_size);
+        buff = _read_text_file(cstr, &file_size);
         if (buff != NULL)
         {
             v7_array_push(v7, array, v7_mk_string(v7, buff, file_size, 1));
-            free(buff);
+            plat_mem_release(buff);
         }
         c++;
     }
@@ -487,7 +487,7 @@ static enum v7_err jsc_readline(struct v7 *v7, v7_val_t* result)
                     else
                         *result = v7_mk_null();
 
-                    if (lineptr) free(lineptr);
+                    if (lineptr) plat_mem_release(lineptr);
                 }
             }
         }
@@ -496,6 +496,39 @@ static enum v7_err jsc_readline(struct v7 *v7, v7_val_t* result)
     return V7_OK;
 }
 
+
+static enum v7_err jsc_writestring(struct v7 *v7, v7_val_t* result)
+{
+    int argc = v7_argc(v7);
+    if (argc>=1)
+    {
+        v7_val_t obj0 = v7_arg(v7, 0);
+        if (v7_is_number(obj0))
+        {
+            int id = (int) v7_to_number((obj0));
+            if (id >= 0)
+            {
+                resource_t resource = (resource_t) res_get(opened_files, id);
+                if (resource)
+                {
+                    struct file_handle *hdl = (struct file_handle*)resource;
+                    int i;
+                    for (i=1; i<argc; i++)
+                    {
+                        char buf[100], *p;
+                        p = v7_stringify(v7, v7_arg(v7, i), buf, sizeof(buf), V7_STRINGIFY_DEFAULT);
+                        fprintf(hdl->file, "%s", p);
+                        if (p != buf) {
+                            plat_mem_release(p);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    *result = v7_mk_undefined();
+    return V7_OK;
+}
 
 void jsc_install_file_lib(struct v7 *v7)
 {
@@ -511,12 +544,17 @@ void jsc_install_file_lib(struct v7 *v7)
     v7_set_method(v7, v7_get_global(v7), "echo", &jsc_echo);
     v7_set_method(v7, v7_get_global(v7), "cat", &jsc_cat);
 
+
+    // file
     opened_files = res_create_management();
 
     v7_set_method(v7, v7_get_global(v7), "fopen", &jsc_fopen);
     v7_set_method(v7, v7_get_global(v7), "fclose", &jsc_fclose);
     v7_set_method(v7, v7_get_global(v7), "popen", &jsc_popen);
     v7_set_method(v7, v7_get_global(v7), "pclose", &jsc_pclose);
+    v7_set_method(v7, v7_get_global(v7), "readline", &jsc_readline);
+    v7_set_method(v7, v7_get_global(v7), "writestring", &jsc_writestring);
+
 
 }
 
