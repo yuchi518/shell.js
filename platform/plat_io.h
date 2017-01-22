@@ -34,6 +34,17 @@
 #endif
 #endif
 
+#if _NO_STD_INC_
+#else
+#ifdef __KERNEL__
+#define plat_io_printf_std(fmt, args...) printk("<3> " fmt, args)
+#define plat_io_printf_err(fmt, args...) printk("<7> " fmt, args)
+#else
+#define plat_io_printf_std(args...) fprintf(stdout, args)
+#define plat_io_printf_err(args...) fprintf(stderr, args)
+#endif
+#endif
+
 plat_inline int plat_io_get_resource(const char* resource_name, void** content_memory, uint* size)
 {
 #if _NO_STD_INC_
