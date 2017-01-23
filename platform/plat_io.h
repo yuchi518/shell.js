@@ -37,8 +37,8 @@
 #if _NO_STD_INC_
 #else
 #ifdef __KERNEL__
-#define plat_io_printf_std(fmt, args...) printk("<3> " fmt, args)
-#define plat_io_printf_err(fmt, args...) printk("<7> " fmt, args)
+#define plat_io_printf_std(fmt, args...) printk("<6> " fmt, args)
+#define plat_io_printf_err(fmt, args...) printk("<3> " fmt, args)
 #else
 #define plat_io_printf_std(args...) fprintf(stdout, args)
 #define plat_io_printf_err(args...) fprintf(stderr, args)

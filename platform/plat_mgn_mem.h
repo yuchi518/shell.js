@@ -61,9 +61,11 @@ typedef struct _MGN_MEM_ {
 } mgn_memory, *mgn_memory_pool;
 
 #if 0
+#define print_mgn_m_err plat_io_printf_err
 #define print_mgn_m_dbg
 #else
-#define print_mgn_m_dbg plat_io_printf_err
+#define print_mgn_m_err plat_io_printf_err
+#define print_mgn_m_dbg plat_io_printf_std
 #endif
 
 static inline void* mgn_mem_alloc(mgn_memory_pool *pool, void *origin_mem, size_t new_size)
@@ -82,7 +84,7 @@ static inline void* mgn_mem_alloc(mgn_memory_pool *pool, void *origin_mem, size_
                 void *new_m = plat_mem_allocate(new_size);
                 if (NULL == new_m)
                 {
-                    print_mgn_m_dbg("[MGN_MEM] Allocate memory error\n");
+                    print_mgn_m_err("[MGN_MEM] Allocate memory error\n");
                     return NULL;                                    // error
                 }
                 plat_mem_copy(new_m, mgn_m->m, mgn_m->s);           // clone
@@ -105,19 +107,19 @@ static inline void* mgn_mem_alloc(mgn_memory_pool *pool, void *origin_mem, size_
     {
         if (NULL != origin_mem)
         {
-            print_mgn_m_dbg("[MGN_MEM] Who's memory (%p)?\n", origin_mem);
+            print_mgn_m_err("[MGN_MEM] Who's memory (%p)?\n", origin_mem);
             return NULL;                                       // where the origin_mem from?
         }
         mgn_m = plat_mem_allocate(sizeof(*mgn_m));             // allocate a zero memory
         if (NULL == mgn_m)
         {
-            print_mgn_m_dbg("[MGN_MEM] Allocate memory error\n");
+            print_mgn_m_err("[MGN_MEM] Allocate memory error\n");
             return NULL;                                       // error
         }
         void *new_m = plat_mem_allocate(new_size);             // allocate a zero memory
         if (NULL == new_m)
         {
-            print_mgn_m_dbg("[MGN_MEM] Allocate memory error\n");
+            print_mgn_m_err("[MGN_MEM] Allocate memory error\n");
             plat_mem_release(mgn_m);
             return NULL;                                       // error
         }
@@ -140,7 +142,7 @@ static inline void* mgn_mem_retain(mgn_memory_pool *pool, void *origin_mem)
         mgn_m->r++;
         return mgn_m->m;
     }
-    print_mgn_m_dbg("[MGN_MEM] Who's memory (%p)?\n", origin_mem);
+    print_mgn_m_err("[MGN_MEM] Who's memory (%p)?\n", origin_mem);
     return NULL;
 }
 
@@ -153,7 +155,7 @@ static inline void _mgn_mem_release(mgn_memory_pool *pool, void *origin_mem, int
         if (0 == mgn_m->r)
         {
             // error
-            print_mgn_m_dbg("MGN_MEM] Memory (%p) can't be released, retained count is zero.\n", mgn_m->m);
+            print_mgn_m_err("MGN_MEM] Memory (%p) can't be released, retained count is zero.\n", mgn_m->m);
             return;
         }
         mgn_m->r--;
