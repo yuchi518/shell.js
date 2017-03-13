@@ -2,15 +2,15 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" buildAllGenerated="true">
     <generated>
-      <config projectName="shell_js" targetName="jslib" />
-      <config projectName="shell_js" targetName="jss" />
       <config projectName="shell_js" targetName="file" />
       <config projectName="shell_js" targetName="shell_js" />
-      <config projectName="shell_js" targetName="jssh" />
-      <config projectName="shell_js" targetName="v7" />
-      <config projectName="shell_js" targetName="js" />
       <config projectName="shell_js" targetName="mongoose" />
+      <config projectName="shell_js" targetName="js" />
+      <config projectName="shell_js" targetName="jslib" />
+      <config projectName="shell_js" targetName="jss" />
       <config projectName="shell_js" targetName="js-clib" />
+      <config projectName="shell_js" targetName="v7" />
+      <config projectName="shell_js" targetName="jssh" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -19,16 +19,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b13ab28a-2fe9-46fb-a57b-6df68f0239a6" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="$PROJECT_DIR$/.idea/.name" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/shell.js.iml" afterPath="$PROJECT_DIR$/.idea/shell.js.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/platform/plat_io.h" afterPath="$PROJECT_DIR$/platform/plat_io.h" />
-    </list>
+    <list default="true" id="b13ab28a-2fe9-46fb-a57b-6df68f0239a6" name="Default" comment="" />
     <ignored path="shell.js.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
+    <ignored path="$PROJECT_DIR$/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -48,7 +43,7 @@
       <file leaf-file-name="jsc_file.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3495">
+            <state relative-caret-position="4194">
               <caret line="233" column="43" lean-forward="false" selection-start-line="233" selection-start-column="43" selection-end-line="233" selection-end-column="43" />
               <folding>
                 <element signature="e#851#872#0" expanded="true" />
@@ -60,7 +55,7 @@
       <file leaf-file-name="main.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
+            <state relative-caret-position="360">
               <caret line="20" column="20" lean-forward="false" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
               <folding>
                 <element signature="e#854#873#0" expanded="true" />
@@ -72,7 +67,7 @@
       <file leaf-file-name="jsc_sys.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js-clib/jsc_sys.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
+            <state relative-caret-position="432">
               <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
               <folding>
                 <element signature="e#856#876#0" expanded="true" />
@@ -84,8 +79,8 @@
       <file leaf-file-name="jsc_file.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="3" lean-forward="false" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
+            <state relative-caret-position="126">
+              <caret line="7" column="22" lean-forward="false" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -94,7 +89,7 @@
       <file leaf-file-name="jsc_sys.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js-clib/jsc_sys.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
+            <state relative-caret-position="504">
               <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="29" selection-end-column="42" />
               <folding />
             </state>
@@ -104,7 +99,7 @@
       <file leaf-file-name="common.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js-clib/common.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1035">
+            <state relative-caret-position="1242">
               <caret line="69" column="43" lean-forward="false" selection-start-line="69" selection-start-column="43" selection-end-line="69" selection-end-column="43" />
               <folding>
                 <element signature="e#906#925#0" expanded="true" />
@@ -116,7 +111,7 @@
       <file leaf-file-name="common.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js-clib/common.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="960">
+            <state relative-caret-position="1152">
               <caret line="64" column="30" lean-forward="false" selection-start-line="64" selection-start-column="30" selection-end-line="64" selection-end-column="30" />
               <folding>
                 <element signature="e#853#871#0" expanded="true" />
@@ -138,7 +133,7 @@
       <file leaf-file-name="plat_mem.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/platform/plat_mem.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="810">
+            <state relative-caret-position="972">
               <caret line="54" column="33" lean-forward="false" selection-start-line="54" selection-start-column="17" selection-end-line="54" selection-end-column="33" />
               <folding>
                 <element signature="e#1158#1194#0" expanded="true" />
@@ -150,7 +145,7 @@
       <file leaf-file-name="plat_type.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/platform/plat_type.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
+            <state relative-caret-position="918">
               <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
               <folding />
             </state>
@@ -333,26 +328,6 @@
     </configuration>
     <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="shell_js" TARGET_NAME="shell_js" CONFIG_NAME="Debug">
       <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
-      <module name="" />
-      <working_directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <method />
-    </configuration>
-    <configuration default="true" type="GoRunFileConfiguration" factoryName="Go Single File">
-      <module name="" />
-      <working_directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <method />
-    </configuration>
-    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
-      <module name="" />
-      <working_directory value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <kind value="DIRECTORY" />
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
@@ -568,17 +543,18 @@
       <workItem from="1476066900767" duration="151000" />
       <workItem from="1485049216412" duration="99000" />
       <workItem from="1485061741334" duration="16000" />
+      <workItem from="1489394085335" duration="15000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="850000" />
+    <option name="totallyTimeSpent" value="865000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1200" extended-state="0" />
-    <editor active="false" />
+    <frame x="0" y="0" width="1920" height="1200" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18177083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18177083" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32849365" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -932,7 +908,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3495">
+        <state relative-caret-position="4194">
           <caret line="233" column="43" lean-forward="false" selection-start-line="233" selection-start-column="43" selection-end-line="233" selection-end-column="43" />
           <folding>
             <element signature="e#851#872#0" expanded="true" />
@@ -942,7 +918,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
+        <state relative-caret-position="360">
           <caret line="20" column="20" lean-forward="false" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
           <folding>
             <element signature="e#854#873#0" expanded="true" />
@@ -952,7 +928,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js-clib/jsc_sys.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
+        <state relative-caret-position="432">
           <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding>
             <element signature="e#856#876#0" expanded="true" />
@@ -962,15 +938,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js-clib/jsc_file.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="3" lean-forward="false" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
+        <state relative-caret-position="126">
+          <caret line="7" column="22" lean-forward="false" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js-clib/jsc_sys.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
+        <state relative-caret-position="504">
           <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="29" selection-end-column="42" />
           <folding />
         </state>
@@ -978,7 +954,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js-clib/common.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1035">
+        <state relative-caret-position="1242">
           <caret line="69" column="43" lean-forward="false" selection-start-line="69" selection-start-column="43" selection-end-line="69" selection-end-column="43" />
           <folding>
             <element signature="e#906#925#0" expanded="true" />
@@ -988,7 +964,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js-clib/common.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
+        <state relative-caret-position="1152">
           <caret line="64" column="30" lean-forward="false" selection-start-line="64" selection-start-column="30" selection-end-line="64" selection-end-column="30" />
           <folding>
             <element signature="e#853#871#0" expanded="true" />
@@ -1006,7 +982,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/platform/plat_mem.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="810">
+        <state relative-caret-position="972">
           <caret line="54" column="33" lean-forward="false" selection-start-line="54" selection-start-column="17" selection-end-line="54" selection-end-column="33" />
           <folding>
             <element signature="e#1158#1194#0" expanded="true" />
@@ -1016,7 +992,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/platform/plat_type.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
+        <state relative-caret-position="918">
           <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
           <folding />
         </state>
