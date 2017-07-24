@@ -15,6 +15,6 @@ add_library(js-clib js-clib/common.c js-clib/jsc_file.c js-clib/jsc_net.c js-cli
 
 add_executable(jssh main.c)
 
-target_link_libraries(jssh v7 mongoose js-clib m)
+target_link_libraries(jssh v7 mongoose js-clib m pthread)
 
 INSTALL_TARGETS(/bin jssh)
